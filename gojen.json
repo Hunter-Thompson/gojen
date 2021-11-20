@@ -1,0 +1,22 @@
+{
+  "name": "gojen",
+  "description": "Go project generator",
+  "repository": "github.com/Hunter-Thompson/gojen",
+  "authorName": "Hunter Thompson",
+  "authorEmail": "aatman@auroville.org.in",
+  "authorOrganization": "Hunter-Thompson",
+  "licensed": true,
+  "release": true,
+  "defaultReleaseBranch": "master",
+  "gitignore": [
+    "test"
+  ],
+  "codeOwners": [
+    "* Hunter-Thompson"
+  ],
+  "goLinter": true,
+  "goTest": true,
+  "goTestArgs": [
+    "-cover"
+  ]
+}
