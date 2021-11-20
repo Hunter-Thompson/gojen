@@ -17,6 +17,8 @@
   "goLinter": true,
   "goTest": true,
   "goTestArgs": [
-    "-cover"
+    "-v",
+    "-cover",
+    "./..."
   ]
 }

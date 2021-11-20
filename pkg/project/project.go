@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"reflect"
 	"strings"
 
 	"gopkg.in/yaml.v2"
@@ -72,16 +73,12 @@ func InitProject() (IProject, error) {
 }
 
 func (proj *Project) ValidateConfig() error {
-	if *proj.Name == "" {
+	if proj.Name == nil || *proj.Name == "" {
 		return errors.New("name is missing in config")
 	}
 
-	if *proj.Repository == "" {
+	if proj.Repository == nil || *proj.Repository == "" {
 		return errors.New("repository is missing in config")
-	}
-
-	if *proj.AuthorName == "" {
-		return errors.New("authorname is missing in config")
 	}
 
 	return nil
@@ -135,23 +132,43 @@ func (proj *Project) WriteConfig() error {
 
 func (proj *Project) SetupProject() error {
 
-	// err := exec.Command("go", "get", "-u", "-v", "github.com/golang/lint/golint").Run()
-
 	err := proj.SetGitignore()
 	if err != nil {
 		return err
 	}
 
-	err = proj.SetCodeOwners()
-	if err != nil {
-		return err
+	if !reflect.DeepEqual(proj.CodeOwners, &[]string{}) {
+		err = proj.SetCodeOwners()
+		if err != nil {
+			return err
+		}
 	}
 
 	modInit := exec.Command("go", "mod", "init", proj.GetRepository())
 	vendor := exec.Command("go", "mod", "vendor")
 	tidy := exec.Command("go", "mod", "tidy")
+	gofmt := exec.Command("go", "fmt")
 
 	pwd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	if _, err := os.Stat(pwd + "/main.go"); errors.Is(err, os.ErrNotExist) {
+		c := `package main
+import (
+	"fmt"
+)
+
+func main () {
+	fmt.Println("project created with gojen, have fun :-)")
+}`
+		err := ioutil.WriteFile(pwd+"/main.go", []byte(c+"\n"), 0644)
+		if err != nil {
+			return err
+		}
+	}
+
 	if err != nil {
 		return err
 	}
@@ -172,25 +189,38 @@ func (proj *Project) SetupProject() error {
 	}
 
 	fmt.Println("running go mod vendor")
-	err = vendor.Run()
+	out, err := vendor.CombinedOutput()
 	if err != nil {
-		return err
+		fmt.Println("running go mod vendor failed")
+		return errors.New(string(out))
 	}
 
 	fmt.Println("running go mod tidy")
-	err = tidy.Run()
+	out, err = tidy.CombinedOutput()
 	if err != nil {
-		return err
+		fmt.Println("running go mod tidy failed")
+		return errors.New(string(out))
 	}
 
-	err = proj.RunLinter()
+	fmt.Println("running go fmt")
+	out, err = gofmt.CombinedOutput()
 	if err != nil {
-		return err
+		fmt.Println("running go fmt failed")
+		return errors.New(string(out))
 	}
 
-	err = proj.RunTest()
-	if err != nil {
-		return err
+	if proj.IsGoLinter() {
+		err = proj.RunLinter()
+		if err != nil {
+			return err
+		}
+	}
+
+	if proj.IsGoTest() {
+		err = proj.RunTest()
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -328,4 +358,20 @@ func (proj *Project) IsGoTest() bool {
 
 func (proj *Project) GetGoTestArgs() []string {
 	return *proj.GoTestArgs
+}
+
+func String(str string) *string {
+	return &str
+}
+
+func Bool(b bool) *bool {
+	return &b
+}
+
+func Int(i int) *int {
+	return &i
+}
+
+func StringSlice(s []string) *[]string {
+	return &s
 }
