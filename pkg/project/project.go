@@ -352,21 +352,26 @@ func (proj *Project) CreateReleaseWorkflow() error {
       run: gojen`
 	}
 
-	c := fmt.Sprintf(`name: Release
-on:
+	c := fmt.Sprintf(`on:
   push:
     branches:
     - %s
-
+name: Release
 jobs:
   build:
+    strategy:
+      matrix:
+        go-version: [%s]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup go 
+    - name: Install Go
       uses: actions/setup-go@v2
       with:
-        go-version: %s
+        go-version: ${{ matrix.go-version }}
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Test
+      run:  go build && gojen
     %s
   release:
     needs:
@@ -439,25 +444,23 @@ func (proj *Project) CreateBuildWorkflow() error {
 	    run: gojen `, proj.GetGojenVersion())
 	}
 
-	c := fmt.Sprintf(`name: asd
+	c := fmt.Sprintf(`name: Build
 on:
-  pull_request: 
-    branches:
-    - *
+  pull_request: {}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     name: Build
     steps:
-    - uses: actions/checkout@v2
-      with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
     - name: Setup go 
       uses: actions/setup-go@v2
       with:
         go-version: %s
+    - uses: actions/checkout@v2
+      with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
     %s
     - name: Check for changes
       id: git_diff
