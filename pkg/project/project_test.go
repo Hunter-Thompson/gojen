@@ -87,6 +87,8 @@ func TestProject(t *testing.T) {
 
 	for _, p := range projects {
 
+		project.CI = true
+
 		dir, err := ioutil.TempDir("/tmp", p.GetName())
 		if err != nil {
 			t.Error(err.Error())
@@ -198,6 +200,7 @@ func TestProject(t *testing.T) {
 	}
 
 	for _, p := range failedProjects {
+		project.CI = true
 		dir, err := ioutil.TempDir("/tmp", "failedtests")
 		if err != nil {
 			t.Error(err.Error())

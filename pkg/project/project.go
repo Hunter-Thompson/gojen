@@ -11,6 +11,8 @@ import (
 	"strings"
 )
 
+var CI bool
+
 type IProject interface {
 	WriteConfig() error
 	SetupProject() error
@@ -231,10 +233,12 @@ func main () {
 		return errors.New(string(out))
 	}
 
-	if proj.IsGoLinter() {
-		err = proj.RunLinter()
-		if err != nil {
-			return err
+	if !CI {
+		if proj.IsGoLinter() {
+			err = proj.RunLinter()
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -344,12 +348,12 @@ func (proj *Project) CreateReleaseWorkflow() error {
 
 	if proj.IsIsGojen() {
 		gojenCommand = `- name: build and run gojen
-      run: "go build && gojen"`
+      run: "go build && ./gojen --ci"`
 	} else {
 		gojenCommand = `- name: Install gojen
       run: go install github.com/Hunter-Thompson/gojen
     - name: Run gojen
-      run: gojen`
+      run: gojen --ci`
 	}
 
 	c := fmt.Sprintf(`on:
@@ -358,23 +362,48 @@ func (proj *Project) CreateReleaseWorkflow() error {
     - %s
 name: Release
 jobs:
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          # Optional: version of golangci-lint to use in form of v1.2 or v1.2.3 or latest to use the latest version
+          version: latest
+
+          # Optional: working directory, useful for monorepos
+          # working-directory: somedir
+
+          # Optional: golangci-lint command line arguments.
+          # args: --issues-exit-code=0
+
+          # Optional: show only new issues if it's a pull request. The default value is false
+          # only-new-issues: true
+
+          # Optional: if set to true then the action will use pre-installed Go.
+          # skip-go-installation: true
+          args: --timeout=5m
+
+          # Optional: if set to true then the action don't cache or restore ~/go/pkg.
+          skip-pkg-cache: true
+
+          # Optional: if set to true then the action don't cache or restore ~/.cache/go-build.
+          skip-build-cache: true
   build:
-    strategy:
-      matrix:
-        go-version: [%s]
     runs-on: ubuntu-latest
     steps:
     - name: Install Go
       uses: actions/setup-go@v2
       with:
-        go-version: ${{ matrix.go-version }}
+        go-version: %s
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Test
-      run:  go build && gojen
     %s
   release:
     needs:
+    - golangci
     - build
     runs-on: ubuntu-latest
     steps:
@@ -436,12 +465,12 @@ func (proj *Project) CreateBuildWorkflow() error {
 
 	if proj.IsIsGojen() {
 		gojenCommand = `- name: build and run gojen
-      run: "go build && gojen"`
+      run: "go build && ./gojen --ci"`
 	} else {
 		gojenCommand = fmt.Sprintf(`- name: Install gojen
       run: go install github.com/Hunter-Thompson/gojen@%s
 	  - name: Run gojen
-	    run: gojen `, proj.GetGojenVersion())
+	    run: gojen --ci`, proj.GetGojenVersion())
 	}
 
 	c := fmt.Sprintf(`name: Build
@@ -449,6 +478,35 @@ on:
   pull_request: {}
 
 jobs:
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          # Optional: version of golangci-lint to use in form of v1.2 or v1.2.3 or latest to use the latest version
+          version: latest
+
+          # Optional: working directory, useful for monorepos
+          # working-directory: somedir
+
+          # Optional: golangci-lint command line arguments.
+          # args: --issues-exit-code=0
+
+          # Optional: show only new issues if it's a pull request. The default value is false
+          # only-new-issues: true
+
+          # Optional: if set to true then the action will use pre-installed Go.
+          # skip-go-installation: true
+          args: --timeout=5m
+
+          # Optional: if set to true then the action don't cache or restore ~/go/pkg.
+          skip-pkg-cache: true
+
+          # Optional: if set to true then the action don't cache or restore ~/.cache/go-build.
+          skip-build-cache: true
   build:
     runs-on: ubuntu-latest
     name: Build

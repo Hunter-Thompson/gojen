@@ -70,4 +70,5 @@ func Execute() {
 }
 
 func init() {
+	rootCmd.PersistentFlags().BoolVarP(&project.CI, "ci", "c", false, "Run in CI mode")
 }

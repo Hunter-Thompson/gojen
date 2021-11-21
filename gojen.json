@@ -11,7 +11,7 @@
   "gitignore": [
     "test"
   ],
-  "goVersion": "1.7",
+  "goVersion": "1.17",
   "codeOwners": [
     "* Hunter-Thompson"
   ],
