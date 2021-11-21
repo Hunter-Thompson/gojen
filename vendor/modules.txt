@@ -13,4 +13,3 @@ github.com/spf13/pflag
 ## explicit
 # gopkg.in/yaml.v2 v2.4.0
 ## explicit; go 1.15
-gopkg.in/yaml.v2

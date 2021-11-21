@@ -11,12 +11,15 @@
   "gitignore": [
     "test"
   ],
+  "goVersion": "1.7",
   "codeOwners": [
     "* Hunter-Thompson"
   ],
   "buildWorkflow": true,
   "goLinter": true,
   "goTest": true,
+  "isGojen": true,
+  "githubToken": "GIT_TOKEN",
   "goTestArgs": [
     "-v",
     "-cover",

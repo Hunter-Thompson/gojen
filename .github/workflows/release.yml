@@ -13,11 +13,10 @@ jobs:
     - name: Setup go 
       uses: actions/setup-go@v2
       with:
-        go-version: 1.16
-	  - name: Install gojen
-      run: go install github.com/Hunter-Thompson/gojen
-	  - name: Run gojen
-	    run: gojen 
+        go-version: 1.7
+		- name: build and run gojen
+	    run: "go build && gojen"
+		
   release:
     needs:
     - build
@@ -27,6 +26,6 @@ jobs:
       - uses: go-semantic-release/action@v1
         id: semrel
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GIT_TOKEN }}
           changelog-generator-opt: "emojis=false"
           force-bump-patch-version: true

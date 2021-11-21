@@ -4,15 +4,36 @@ on:
 
 jobs:
   build:
-	runs-on: ubuntu:latest
-	name: Build
-	steps:
-	- uses: actions/checkout@v2
-	- name: Setup go 
-	  uses: actions/setup-go@v2
-	  with:
-		go-version: 1.16
-	  - name: Install gojen
-	  run: go install github.com/Hunter-Thompson/gojen
-	  - name: Run gojen
-	    run: gojen
+	  runs-on: ubuntu:latest
+	  name: Build
+	  steps:
+	  - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+	  - name: Setup go 
+	    uses: actions/setup-go@v2
+	    with:
+	  	go-version: 1.7
+	  - name: build and run gojen
+	    run: "go build && gojen"
+    - name: Check for changes
+      id: git_diff
+      run: git diff --exit-code || echo "::set-output name=has_changes::true"
+    - if: steps.git_diff.outputs.has_changes
+      name: Commit and push changes (if changed)
+      run: 'git add . && git commit -m "chore: self mutation" && git push origin
+        HEAD:${{ github.event.pull_request.head.ref }}'
+    - if: steps.git_diff.outputs.has_changes
+      name: Update status check (if changed)
+      run: gh api -X POST /repos/${{ github.event.pull_request.head.repo.full_name
+        }}/check-runs -F name="build" -F head_sha="$(git rev-parse HEAD)" -F
+        status="completed" -F conclusion="success"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+    - if: steps.git_diff.outputs.has_changes
+      name: Cancel workflow (if changed)
+      run: gh api -X POST /repos/${{ github.event.pull_request.head.repo.full_name
+        }}/actions/runs/${{ github.run_id }}/cancel
+      env:
+        GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
