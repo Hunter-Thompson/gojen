@@ -10,13 +10,13 @@ jobs:
     - name: Setup go 
       uses: actions/setup-go@v2
       with:
-        go-version: 1.7
+        go-version: 1.17
     - uses: actions/checkout@v2
       with:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
     - name: build and run gojen
-      run: pwd && ls && go test ./...
+      run: "go build && ./gojen"
     - name: Check for changes
       id: git_diff
       run: git diff --exit-code || echo "::set-output name=has_changes::true"

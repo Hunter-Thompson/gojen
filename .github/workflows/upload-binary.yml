@@ -15,4 +15,4 @@ jobs:
         github_token: ${{ secrets.GIT_TOKEN }}
         goos: linux
         goarch: amd64
-        goversion: 1.7
+        goversion: 1.17

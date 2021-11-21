@@ -344,7 +344,7 @@ func (proj *Project) CreateReleaseWorkflow() error {
 
 	if proj.IsIsGojen() {
 		gojenCommand = `- name: build and run gojen
-      run: "go build && gojen"`
+      run: "go build && ./gojen"`
 	} else {
 		gojenCommand = `- name: Install gojen
       run: go install github.com/Hunter-Thompson/gojen
@@ -436,7 +436,7 @@ func (proj *Project) CreateBuildWorkflow() error {
 
 	if proj.IsIsGojen() {
 		gojenCommand = `- name: build and run gojen
-      run: "go build && gojen"`
+      run: "go build && ./gojen"`
 	} else {
 		gojenCommand = fmt.Sprintf(`- name: Install gojen
       run: go install github.com/Hunter-Thompson/gojen@%s
