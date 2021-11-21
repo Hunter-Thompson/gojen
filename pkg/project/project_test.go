@@ -13,6 +13,8 @@ import (
 func TestProject(t *testing.T) {
 	t.Log("test")
 
+	// TODO: add tests for codeowners, workflow, gitignore, main.go files
+
 	projects := []project.Project{
 		{
 			Name:                 project.String("test"),
@@ -24,6 +26,7 @@ func TestProject(t *testing.T) {
 			Licensed:             project.Bool(true),
 			Release:              project.Bool(true),
 			DefaultReleaseBranch: project.String("test"),
+			BuildWorkflow:        project.Bool(true),
 			Gitignore:            project.StringSlice([]string{"test", "test"}),
 			CodeOwners:           project.StringSlice([]string{"test", "test"}),
 			GoLinter:             project.Bool(true),
@@ -38,7 +41,7 @@ func TestProject(t *testing.T) {
 			AuthorEmail:          project.String("test1"),
 			AuthorOrganization:   project.String("test1"),
 			Licensed:             project.Bool(true),
-			Release:              project.Bool(true),
+			Release:              project.Bool(false),
 			DefaultReleaseBranch: project.String("test1"),
 			Gitignore:            project.StringSlice([]string{"test1", "test1"}),
 			CodeOwners:           project.StringSlice([]string{"test1", "test1"}),
@@ -51,6 +54,7 @@ func TestProject(t *testing.T) {
 			Description:          project.String("test2"),
 			Repository:           project.String("test2"),
 			AuthorName:           project.String("test2"),
+			BuildWorkflow:        project.Bool(true),
 			AuthorEmail:          project.String("test2"),
 			AuthorOrganization:   project.String("test2"),
 			Licensed:             project.Bool(true),
@@ -67,6 +71,7 @@ func TestProject(t *testing.T) {
 			Description:          project.String("test3"),
 			AuthorName:           project.String("test3"),
 			Repository:           project.String("test3"),
+			BuildWorkflow:        project.Bool(true),
 			AuthorEmail:          project.String("test3"),
 			AuthorOrganization:   project.String("test3"),
 			Licensed:             project.Bool(true),
@@ -167,7 +172,7 @@ func TestProject(t *testing.T) {
 			AuthorEmail:          project.String("test4"),
 			AuthorOrganization:   project.String("test4"),
 			Licensed:             project.Bool(true),
-			Release:              project.Bool(true),
+			Release:              project.Bool(false),
 			DefaultReleaseBranch: project.String("test4"),
 			Gitignore:            project.StringSlice([]string{"test4", "test4"}),
 			CodeOwners:           project.StringSlice([]string{"test4", "test4"}),
@@ -182,7 +187,7 @@ func TestProject(t *testing.T) {
 			AuthorEmail:          project.String("test5"),
 			AuthorOrganization:   project.String("test5"),
 			Licensed:             project.Bool(true),
-			Release:              project.Bool(true),
+			Release:              project.Bool(false),
 			DefaultReleaseBranch: project.String("test5"),
 			Gitignore:            project.StringSlice([]string{"test4", "test4"}),
 			CodeOwners:           project.StringSlice([]string{"test4", "test4"}),
@@ -197,8 +202,6 @@ func TestProject(t *testing.T) {
 		if err != nil {
 			t.Error(err.Error())
 		}
-
-		fmt.Println(dir)
 
 		err = os.Chdir(dir)
 		if err != nil {

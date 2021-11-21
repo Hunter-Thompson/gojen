@@ -40,6 +40,7 @@ type Project struct {
 	Name        *string `yaml:"name" json:"name"`
 	Description *string `yaml:"description" json:"description"`
 	Repository  *string `yaml:"repository"  json:"repository"`
+	GoVersion   *string `yaml:"goVersion" json:"goVersion"`
 
 	AuthorName         *string `yaml:"authorName" json:"authorName"`
 	AuthorEmail        *string `yaml:"authorEmail" json:"authorEmail"`
@@ -48,6 +49,8 @@ type Project struct {
 	Licensed *bool `yaml:"licensed" json:"licensed"`
 
 	Release              *bool   `yaml:"release" json:"release"`
+	BuildWorkflow        *bool   `yaml:"buildWorkflow" json:"buildWorkflow"`
+	GithubToken          *string `yaml:"githubToken" json:"githubToken"`
 	DefaultReleaseBranch *string `yaml:"defaultReleaseBranch" json:"defaultReleaseBranch"`
 
 	Gitignore  *[]string `yaml:"gitignore" json:"gitignore"`
@@ -73,11 +76,12 @@ func InitProject() (IProject, error) {
 }
 
 func (proj *Project) ValidateConfig() error {
-	if proj.Name == nil || *proj.Name == "" {
+
+	if proj.GetName() == "" {
 		return errors.New("name is missing in config")
 	}
 
-	if proj.Repository == nil || *proj.Repository == "" {
+	if proj.GetRepository() == "" {
 		return errors.New("repository is missing in config")
 	}
 
@@ -139,6 +143,20 @@ func (proj *Project) SetupProject() error {
 
 	if !reflect.DeepEqual(proj.CodeOwners, &[]string{}) {
 		err = proj.SetCodeOwners()
+		if err != nil {
+			return err
+		}
+	}
+
+	if proj.IsRelease() {
+		err = proj.CreateReleaseWorkflow()
+		if err != nil {
+			return err
+		}
+	}
+
+	if proj.IsBuildWorkflow() {
+		err = proj.CreateBuildWorkflow()
 		if err != nil {
 			return err
 		}
@@ -304,60 +322,219 @@ func (proj *Project) RunLinter() error {
 
 }
 
+func (proj *Project) CreateReleaseWorkflow() error {
+
+	fmt.Println("creating release workflow")
+
+	pwd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	err = os.MkdirAll(fmt.Sprintf("%s/.github/workflows", pwd), 0755)
+	if err != nil {
+		return err
+	}
+
+	c := fmt.Sprintf(`name: Release
+on:
+  push:
+	branches:
+	  - %s
+
+jobs:
+  build:
+    runs-on: ubuntu:latest
+    name: Release
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup go 
+      uses: actions/setup-go@v2
+      with:
+        go-version: %s
+	  - name: Install gojen
+      run: go install github.com/Hunter-Thompson/gojen
+	  - name: Run gojen
+	    run: gojen 
+  release:
+    needs:
+    - build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: go-semantic-release/action@v1
+        id: semrel
+        with:
+          github-token: ${{ secrets.%s }}
+          changelog-generator-opt: "emojis=false"
+          force-bump-patch-version: true`, proj.GetDefaultReleaseBranch(), proj.GetGoVersion(), proj.GetGitHubToken())
+
+	err = ioutil.WriteFile(fmt.Sprintf("%s/.github/workflows/release.yml", pwd), []byte(c), 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (proj *Project) CreateBuildWorkflow() error {
+
+	fmt.Println("creating build workflow")
+
+	pwd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	err = os.MkdirAll(fmt.Sprintf("%s/.github/workflows", pwd), 0755)
+	if err != nil {
+		return err
+	}
+
+	c := fmt.Sprintf(`name: Build
+on:
+  pull_request: {}
+
+jobs:
+  build:
+	runs-on: ubuntu:latest
+	name: Build
+	steps:
+	- uses: actions/checkout@v2
+	- name: Setup go 
+	  uses: actions/setup-go@v2
+	  with:
+		go-version: %s
+	  - name: Install gojen
+	  run: go install github.com/Hunter-Thompson/gojen
+	  - name: Run gojen
+	    run: gojen`, proj.GetGoVersion())
+
+	err = ioutil.WriteFile(fmt.Sprintf("%s/.github/workflows/build.yml", pwd), []byte(c), 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (proj *Project) GetName() string {
+	if proj.Name == nil {
+		return ""
+	}
 	return *proj.Name
 }
 
 func (proj *Project) GetDescription() string {
+	if proj.Description == nil {
+		return ""
+	}
 	return *proj.Description
 }
 
 func (proj *Project) GetRepository() string {
+	if proj.Repository == nil {
+		return ""
+	}
 	return *proj.Repository
 }
 
 func (proj *Project) GetAuthorName() string {
+	if proj.AuthorName == nil {
+		return ""
+	}
 	return *proj.AuthorName
 }
 
 func (proj *Project) GetAuthorEmail() string {
+	if proj.AuthorEmail == nil {
+		return ""
+	}
 	return *proj.AuthorEmail
 }
 
+func (proj *Project) GetGoVersion() string {
+	if proj.GoVersion == nil {
+		return "1.16"
+	}
+	return *proj.GoVersion
+}
+
+func (proj *Project) GetGitHubToken() string {
+	if proj.GithubToken == nil {
+		return "GITHUB_TOKEN"
+	}
+	return *proj.GithubToken
+}
+
 func (proj *Project) GetAuthorOrganization() string {
+	if proj.AuthorOrganization == nil {
+		return ""
+	}
 	return *proj.AuthorOrganization
 }
 
 func (proj *Project) IsLicensed() bool {
+	if proj.Licensed == nil {
+		return false
+	}
 	return *proj.Licensed
 }
 
 func (proj *Project) IsRelease() bool {
+	if proj.Release == nil {
+		return false
+	}
 	return *proj.Release
 }
 
 func (proj *Project) GetDefaultReleaseBranch() string {
+	if proj.DefaultReleaseBranch == nil {
+		return "master"
+	}
 	return *proj.DefaultReleaseBranch
 }
 
 func (proj *Project) GetGitignore() []string {
+	if proj.Gitignore == nil {
+		return []string{}
+	}
 	return *proj.Gitignore
 }
 
 func (proj *Project) GetCodeOwners() []string {
+	if proj.CodeOwners == nil {
+		return []string{}
+	}
 	return *proj.CodeOwners
 }
 
 func (proj *Project) IsGoLinter() bool {
+	if proj.GoLinter == nil {
+		return false
+	}
 	return *proj.GoLinter
 }
 
 func (proj *Project) IsGoTest() bool {
+	if proj.GoTest == nil {
+		return true
+	}
 	return *proj.GoTest
 }
 
 func (proj *Project) GetGoTestArgs() []string {
+	if proj.GoTestArgs == nil {
+		return []string{}
+	}
 	return *proj.GoTestArgs
+}
+
+func (proj *Project) IsBuildWorkflow() bool {
+	if proj.BuildWorkflow == nil {
+		return false
+	}
+	return *proj.BuildWorkflow
 }
 
 func String(str string) *string {
