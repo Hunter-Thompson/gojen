@@ -344,33 +344,30 @@ func (proj *Project) CreateReleaseWorkflow() error {
 
 	if proj.IsIsGojen() {
 		gojenCommand = `- name: build and run gojen
-	    run: "go build && gojen"
-		`
+      run: "go build && gojen"`
 	} else {
 		gojenCommand = `- name: Install gojen
       run: go install github.com/Hunter-Thompson/gojen
-	  - name: Run gojen
-	    run: gojen 
-		`
+    - name: Run gojen
+      run: gojen`
 	}
 
 	c := fmt.Sprintf(`name: Release
 on:
   push:
-	branches:
-	  - %s
+    branches:
+    - %s
 
 jobs:
   build:
-    runs-on: ubuntu:latest
-    name: Release
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Setup go 
       uses: actions/setup-go@v2
       with:
         go-version: %s
-		%s
+    %s
   release:
     needs:
     - build
@@ -434,7 +431,7 @@ func (proj *Project) CreateBuildWorkflow() error {
 
 	if proj.IsIsGojen() {
 		gojenCommand = `- name: build and run gojen
-	    run: "go build && gojen"`
+      run: "go build && gojen"`
 	} else {
 		gojenCommand = fmt.Sprintf(`- name: Install gojen
       run: go install github.com/Hunter-Thompson/gojen@%s
@@ -442,24 +439,26 @@ func (proj *Project) CreateBuildWorkflow() error {
 	    run: gojen `, proj.GetGojenVersion())
 	}
 
-	c := fmt.Sprintf(`name: Build
+	c := fmt.Sprintf(`name: asd
 on:
-  pull_request: {}
+  pull_request: 
+    branches:
+    - *
 
 jobs:
   build:
-	  runs-on: ubuntu:latest
-	  name: Build
-	  steps:
-	  - uses: actions/checkout@v2
-        with:
+    runs-on: ubuntu-latest
+    name: Build
+    steps:
+    - uses: actions/checkout@v2
+      with:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
-	  - name: Setup go 
-	    uses: actions/setup-go@v2
-	    with:
-	  	go-version: %s
-	  %s
+    - name: Setup go 
+      uses: actions/setup-go@v2
+      with:
+        go-version: %s
+    %s
     - name: Check for changes
       id: git_diff
       run: git diff --exit-code || echo "::set-output name=has_changes::true"
