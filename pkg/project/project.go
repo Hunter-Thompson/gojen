@@ -382,10 +382,10 @@ func (proj *Project) CreateReleaseWorkflow() error {
 		gojenCommand = `- name: build and run gojen
       run: "go build && ./gojen --ci"`
 	} else {
-		gojenCommand = `- name: Install gojen
-      run: go install github.com/Hunter-Thompson/gojen
+		gojenCommand = fmt.Sprintf(`- name: Install gojen
+      run: go install github.com/Hunter-Thompson/gojen@v%s
     - name: Run gojen
-      run: gojen --ci`
+      run: gojen --ci`, proj.GetGojenVersion())
 	}
 
 	c := fmt.Sprintf(`on:
@@ -500,9 +500,9 @@ func (proj *Project) CreateBuildWorkflow() error {
       run: "go build && ./gojen --ci"`
 	} else {
 		gojenCommand = fmt.Sprintf(`- name: Install gojen
-      run: go install github.com/Hunter-Thompson/gojen@%s
-	  - name: Run gojen
-	    run: gojen --ci`, proj.GetGojenVersion())
+      run: go install github.com/Hunter-Thompson/gojen@v%s
+    - name: Run gojen
+      run: gojen --ci`, proj.GetGojenVersion())
 	}
 
 	c := fmt.Sprintf(`name: Build

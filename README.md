@@ -86,6 +86,18 @@ Runing `gojen` after the project has been created does the following things:
 - golangci-lint
 - go test
 
+## Known issues
+
+1. The default GITHUB_TOKEN cannot be used for the release workflow since if the release is created by the github bot, the upload binary workflow will not run.
+
+So please upload a GITHUB token inside the repo secrets, and add the key to the secret inside `gojen.json`
+
+## Example project
+
+https://github.com/Hunter-Thompson/test-gojen
+
+https://github.com/Hunter-Thompson/gojen - yes gojen uses gojen : )
+
 ## Notes
 
 This project was inspired by #projen/projen.
