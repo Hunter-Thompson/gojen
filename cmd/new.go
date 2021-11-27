@@ -18,6 +18,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/Hunter-Thompson/gojen/pkg/project"
@@ -71,12 +72,12 @@ to quickly create a Cobra application.`,
 
 		proj, err := project.InitProject()
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Fatal(err.Error())
 		}
 
 		err = proj.SetupProject()
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Fatal(err.Error())
 		}
 
 	},

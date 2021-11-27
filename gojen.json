@@ -15,6 +15,7 @@
   "codeOwners": [
     "* Hunter-Thompson"
   ],
+  "readme": true,
   "buildWorkflow": true,
   "goLinter": true,
   "goTest": true,
