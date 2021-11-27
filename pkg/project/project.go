@@ -17,6 +17,7 @@ type IProject interface {
 	WriteConfig() error
 	SetupProject() error
 	SetGitignore() error
+	CreateReadme() error
 	RunTest() error
 	RunLinter() error
 
@@ -38,6 +39,7 @@ type IProject interface {
 	GetGitHubToken() string
 	GetGojenVersion() string
 	IsIsGojen() bool
+	IsCreateReadme() bool
 }
 
 type Project struct {
@@ -51,6 +53,7 @@ type Project struct {
 	AuthorOrganization *string `yaml:"authorOrganization" json:"authorOrganization"`
 
 	Licensed     *bool   `yaml:"licensed" json:"licensed"`
+	Readme       *bool   `yaml:"readme" json:"readme"`
 	GojenVersion *string `yaml:"gojenVersion" json:"gojenVersion"`
 
 	Release              *bool   `yaml:"release" json:"release"`
@@ -145,6 +148,13 @@ func (proj *Project) SetupProject() error {
 	err := proj.SetGitignore()
 	if err != nil {
 		return err
+	}
+
+	if proj.IsCreateReadme() {
+		err = proj.CreateReadme()
+		if err != nil {
+			return err
+		}
 	}
 
 	if !reflect.DeepEqual(proj.CodeOwners, &[]string{}) {
@@ -281,6 +291,28 @@ func (proj *Project) SetGitignore() error {
 	err = ioutil.WriteFile(gitignorePath, []byte(contents), 0644)
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (proj *Project) CreateReadme() error {
+
+	pwd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	readmePath := fmt.Sprintf("%s/README.md", pwd)
+
+	if _, err := os.Stat(readmePath); errors.Is(err, os.ErrNotExist) {
+		c := `# ` + *proj.Name + `
+
+`
+		err := ioutil.WriteFile(readmePath, []byte(c+"\n"), 0644)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -681,6 +713,13 @@ func (proj *Project) GetGojenVersion() string {
 		return "0.1.0"
 	}
 	return *proj.GojenVersion
+}
+
+func (proj *Project) IsCreateReadme() bool {
+	if proj.Readme == nil {
+		return true
+	}
+	return *proj.Readme
 }
 
 func String(str string) *string {

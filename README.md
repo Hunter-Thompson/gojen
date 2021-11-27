@@ -1,0 +1,94 @@
+# gojen
+
+Define your go project's configuration using a json config. This config can be used to generate a new go project for you, and can also create configs for different tools.
+
+## Features
+
+- Release workflow
+
+If you choose to enable the release workflow, gojen creates a Github actions workflow that simply runs `gojen`, which lints your code using `golangci-lint`, runs your tests according to the config, and then creates a release on Github using `semantic-go-release`. After that it uploads a binary of your built project as an attachment.
+
+- Build workflow
+
+gojen creates a Github workflow that runs the `gojen` cli, which builds lints/tests/builds your project.
+
+- Gitignore
+
+You can define all your gitignore entries inside `gojen.json`
+
+- Codeowners 
+
+You can define all your codeowners entries inside `gojen.json`
+
+- Golangci-lint
+
+Lint your code using golangci-lint
+
+- Gotest 
+
+Arguments for the go test command
+
+## Getting started
+
+Install binary
+
+```
+go install github.com/hunter-thompson/gojen
+```
+
+Create a config for your project
+
+```
+printf "{
+  "name": "gojen",
+  "description": "Go project generator",
+  "repository": "github.com/Hunter-Thompson/gojen",
+  "goVersion": "1.17",
+  "authorName": "Hunter Thompson",
+  "authorEmail": "hunter@example.com",
+  "authorOrganization": "Hunter-Thompson",
+  "licensed": true,
+  "readme": true,
+  "gojenVersion": 1.0.0,
+  "release": true,
+  "buildWorkflow": true,
+  "githubToken": "GIT_TOKEN",
+  "defaultReleaseBranch": "master",
+  "isGojen": false,
+  "gitignore": [
+	  ".vscode",
+	  ".idea",
+  ],
+  "codeOwners": [
+	  "* Hunter-Thompson",
+  ],
+  "goLinter": true,
+  "goTest": true,
+  "goTestArgs": [
+	  "-v",
+	  "-cover",
+	  "./..."
+  ]
+}" > gojen.json
+```
+
+Generate project
+
+```
+gojen new
+```
+
+Runing `gojen` after the project has been created does the following things:
+
+- go mod vendor
+- go mod tidy
+- go fmt
+- golangci-lint
+- go test
+
+## Notes
+
+This project was inspired by #projen/projen.
+
+
+
