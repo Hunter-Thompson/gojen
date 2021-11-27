@@ -1,5 +1,7 @@
 # gojen
 
+[![codecov](https://codecov.io/gh/Hunter-Thompson/gojen/branch/master/graph/badge.svg?token=LC2KR2180N)](https://codecov.io/gh/Hunter-Thompson/gojen) [![Release](https://github.com/Hunter-Thompson/gojen/actions/workflows/release.yml/badge.svg)](https://github.com/Hunter-Thompson/gojen/actions/workflows/release.yml)
+
 Define your go project's configuration using a json config. This config can be used to generate a new go project for you, and can also create configs for different tools.
 
 ## Features
