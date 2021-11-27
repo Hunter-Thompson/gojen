@@ -46,6 +46,10 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
     - name: build and run gojen
       run: "go build && ./gojen --ci"
+    - name: Upload code coverage
+      uses: codecov/codecov-action@v2
+      with:
+        files: ./coverage.txt
     - name: Check for changes
       id: git_diff
       run: git diff --exit-code || echo "::set-output name=has_changes::true"

@@ -20,6 +20,7 @@
   "goLinter": true,
   "goTest": true,
   "isGojen": true,
+  "codeCov": true,
   "githubToken": "GIT_TOKEN",
   "goTestArgs": [
     "-v",

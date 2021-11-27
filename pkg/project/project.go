@@ -40,6 +40,7 @@ type IProject interface {
 	GetGojenVersion() string
 	IsIsGojen() bool
 	IsCreateReadme() bool
+	IsCodeCov() bool
 }
 
 type Project struct {
@@ -61,6 +62,7 @@ type Project struct {
 	GithubToken          *string `yaml:"githubToken" json:"githubToken"`
 	DefaultReleaseBranch *string `yaml:"defaultReleaseBranch" json:"defaultReleaseBranch"`
 	IsGojen              *bool   `yaml:"isGojen" json:"isGojen"`
+	CodeCov              *bool   `yaml:"codeCov" json:"codeCov"`
 
 	Gitignore  *[]string `yaml:"gitignore" json:"gitignore"`
 	CodeOwners *[]string `yaml:"codeOwners" json:"codeOwners"`
@@ -145,37 +147,44 @@ func (proj *Project) WriteConfig() error {
 
 func (proj *Project) SetupProject() error {
 
-	err := proj.SetGitignore()
-	if err != nil {
-		return err
+	if proj.IsCodeCov() {
+		err := proj.AddCodeCov()
+		if err != nil {
+			return err
+		}
 	}
 
 	if proj.IsCreateReadme() {
-		err = proj.CreateReadme()
+		err := proj.CreateReadme()
 		if err != nil {
 			return err
 		}
 	}
 
 	if !reflect.DeepEqual(proj.CodeOwners, &[]string{}) {
-		err = proj.SetCodeOwners()
+		err := proj.SetCodeOwners()
 		if err != nil {
 			return err
 		}
 	}
 
 	if proj.IsRelease() {
-		err = proj.CreateReleaseWorkflow()
+		err := proj.CreateReleaseWorkflow()
 		if err != nil {
 			return err
 		}
 	}
 
 	if proj.IsBuildWorkflow() {
-		err = proj.CreateBuildWorkflow()
+		err := proj.CreateBuildWorkflow()
 		if err != nil {
 			return err
 		}
+	}
+
+	err := proj.SetGitignore()
+	if err != nil {
+		return err
 	}
 
 	modInit := exec.Command("go", "mod", "init", proj.GetRepository())
@@ -265,8 +274,10 @@ func main () {
 func (proj *Project) RunTest() error {
 
 	fmt.Println("running go test")
+	*proj.GoTestArgs = append([]string{"test"}, *proj.GoTestArgs...)
+	fmt.Println("go test args:", proj.GoTestArgs)
 
-	out, err := exec.Command("go", append([]string{"test", "-v"}, *proj.GoTestArgs...)...).CombinedOutput()
+	out, err := exec.Command("go", *proj.GoTestArgs...).CombinedOutput()
 	if err != nil {
 		fmt.Println("running go test failed")
 		return errors.New(string(out))
@@ -292,6 +303,14 @@ func (proj *Project) SetGitignore() error {
 	if err != nil {
 		return err
 	}
+
+	return nil
+}
+
+func (proj *Project) AddCodeCov() error {
+
+	*proj.Gitignore = append(*proj.Gitignore, "coverage.txt")
+	*proj.GoTestArgs = append([]string{"-coverprofile=coverage.txt", "-covermode=atomic"}, *proj.GoTestArgs...)
 
 	return nil
 }
@@ -388,6 +407,15 @@ func (proj *Project) CreateReleaseWorkflow() error {
       run: gojen --ci`, proj.GetGojenVersion())
 	}
 
+	var codeCovUpload string
+
+	if proj.IsCodeCov() {
+		codeCovUpload = `- name: Upload code coverage
+      uses: codecov/codecov-action@v2
+      with:
+        files: ./coverage.txt`
+	}
+
 	c := fmt.Sprintf(`on:
   push:
     branches:
@@ -433,6 +461,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     %s
+    %s
   release:
     needs:
     - golangci
@@ -445,7 +474,7 @@ jobs:
         with:
           github-token: ${{ secrets.%s }}
           changelog-generator-opt: "emojis=false"
-          force-bump-patch-version: true`, proj.GetDefaultReleaseBranch(), proj.GetGoVersion(), gojenCommand, proj.GetGitHubToken())
+          force-bump-patch-version: true`, proj.GetDefaultReleaseBranch(), proj.GetGoVersion(), gojenCommand, codeCovUpload, proj.GetGitHubToken())
 
 	err = ioutil.WriteFile(fmt.Sprintf("%s/.github/workflows/release.yml", pwd), []byte(c), 0644)
 	if err != nil {
@@ -505,6 +534,15 @@ func (proj *Project) CreateBuildWorkflow() error {
       run: gojen --ci`, proj.GetGojenVersion())
 	}
 
+	var codeCovUpload string
+
+	if proj.IsCodeCov() {
+		codeCovUpload = `- name: Upload code coverage
+      uses: codecov/codecov-action@v2
+      with:
+        files: ./coverage.txt`
+	}
+
 	c := fmt.Sprintf(`name: Build
 on:
   pull_request: {}
@@ -552,6 +590,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
     %s
+    %s
     - name: Check for changes
       id: git_diff
       run: git diff --exit-code || echo "::set-output name=has_changes::true"
@@ -571,7 +610,7 @@ jobs:
       run: gh api -X POST /repos/${{ github.event.pull_request.head.repo.full_name
         }}/actions/runs/${{ github.run_id }}/cancel
       env:
-        GITHUB_TOKEN: ${{ secrets.%s }}`, proj.GetGoVersion(), gojenCommand, proj.GetGitHubToken(), proj.GetGitHubToken())
+        GITHUB_TOKEN: ${{ secrets.%s }}`, proj.GetGoVersion(), gojenCommand, codeCovUpload, proj.GetGitHubToken(), proj.GetGitHubToken())
 
 	err = ioutil.WriteFile(fmt.Sprintf("%s/.github/workflows/build.yml", pwd), []byte(c), 0644)
 	if err != nil {
@@ -720,6 +759,13 @@ func (proj *Project) IsCreateReadme() bool {
 		return true
 	}
 	return *proj.Readme
+}
+
+func (proj *Project) IsCodeCov() bool {
+	if proj.CodeCov == nil {
+		return false
+	}
+	return *proj.CodeCov
 }
 
 func String(str string) *string {
