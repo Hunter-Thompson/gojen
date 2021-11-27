@@ -48,6 +48,7 @@ func TestProject(t *testing.T) {
 			GoLinter:             project.Bool(false),
 			GoTest:               project.Bool(true),
 			GoTestArgs:           project.StringSlice([]string{"-v", "-cover"}),
+			CodeCov:              project.Bool(true),
 		},
 		{
 			Name:                 project.String("test2"),
@@ -65,6 +66,8 @@ func TestProject(t *testing.T) {
 			GoLinter:             project.Bool(true),
 			GoTest:               project.Bool(true),
 			GoTestArgs:           project.StringSlice([]string{"", "-cover", "./..."}),
+			CodeCov:              project.Bool(true),
+			GojenVersion:         project.String("1.2.0"),
 		},
 		{
 			Name:                 project.String("test3"),
@@ -82,6 +85,7 @@ func TestProject(t *testing.T) {
 			GoLinter:             project.Bool(false),
 			GoTest:               project.Bool(false),
 			GoTestArgs:           project.StringSlice([]string{"-v", "-cover", "./..."}),
+			GojenVersion:         project.String("1.2.0"),
 		},
 	}
 
