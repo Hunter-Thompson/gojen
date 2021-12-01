@@ -8,7 +8,11 @@ jobs:
   asd:
     runs-on: ubuntu-latest
     steps:
+    - name: prependtest
+      run: echo asd
     - name: asdjob
+      run: echo asd
+    - name: addjobtest
       run: echo asd
     - name: appendtest
       run: echo asd

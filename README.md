@@ -51,7 +51,7 @@ printf "{
   "authorOrganization": "Hunter-Thompson",
   "licensed": true,
   "readme": true,
-  "gojenVersion": 1.1.1,
+  "gojenVersion": 1.3.1,
   "release": true,
   "buildWorkflow": true,
   "githubToken": "GIT_TOKEN",

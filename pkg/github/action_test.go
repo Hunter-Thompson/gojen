@@ -37,15 +37,31 @@ func TestA(t *testing.T) {
 			}},
 	})
 
-	err := a.AppendStep("asd", &github.JobStep{
-		Name: project.String("appendtest"),
+	err := a.AddStep("asd", &github.JobStep{
+		Name: project.String("addjobtest"),
 		Run:  project.String("echo asd"),
 	})
-
 	if err != nil {
 		t.Error(err)
 	}
+
+	err = a.AppendStep("asd", &github.JobStep{
+		Name: project.String("appendtest"),
+		Run:  project.String("echo asd"),
+	})
+	if err != nil {
+		t.Error(err)
+	}
+
 	err = a.PrependStep("dsa", &github.JobStep{
+		Name: project.String("prependtest"),
+		Run:  project.String("echo asd"),
+	})
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = a.PrependStep("asd", &github.JobStep{
 		Name: project.String("prependtest"),
 		Run:  project.String("echo asd"),
 	})
