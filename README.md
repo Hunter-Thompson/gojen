@@ -1,6 +1,6 @@
 # gojen
 
-[![codecov](https://codecov.io/gh/Hunter-Thompson/gojen/branch/master/graph/badge.svg?token=LC2KR2180N)](https://codecov.io/gh/Hunter-Thompson/gojen) [![Release](https://github.com/Hunter-Thompson/gojen/actions/workflows/release.yml/badge.svg)](https://github.com/Hunter-Thompson/gojen/actions/workflows/release.yml) [![Go Report Card](https://goreportcard.com/badge/github.com/Hunter-Thompson/gojen)](https://goreportcard.com/report/github.com/Hunter-Thompson/gojen)
+[![Release](https://github.com/Hunter-Thompson/gojen/actions/workflows/release.yml/badge.svg)](https://github.com/Hunter-Thompson/gojen/actions/workflows/release.yml) [![Upload Binary](https://github.com/Hunter-Thompson/gojen/actions/workflows/upload-binary.yml/badge.svg)](https://github.com/Hunter-Thompson/gojen/actions/workflows/upload-binary.yml) [![Go Report Card](https://goreportcard.com/badge/github.com/Hunter-Thompson/gojen)](https://goreportcard.com/report/github.com/Hunter-Thompson/gojen) [![codecov](https://codecov.io/gh/Hunter-Thompson/gojen/branch/master/graph/badge.svg?token=LC2KR2180N)](https://codecov.io/gh/Hunter-Thompson/gojen)  
 
 Define your go project's configuration using a json config. This config can be used to generate a new go project for you, and can also create configs for different tools.
 
