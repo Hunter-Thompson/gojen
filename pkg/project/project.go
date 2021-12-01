@@ -574,7 +574,7 @@ func (proj *Project) CreateReleaseWorkflow() error {
 					Name: String("Upload binary"),
 					Uses: String("wangyoucao577/go-release-action@v1.19"),
 					With: &map[string]interface{}{
-						"github-token": fmt.Sprintf("${{ secrets.%s }}", proj.GetGitHubToken()),
+						"github_token": fmt.Sprintf("${{ secrets.%s }}", proj.GetGitHubToken()),
 						"goos":         "linux",
 						"goarch":       "amd64",
 						"go-version":   proj.GetGoVersion(),
