@@ -1,63 +1,54 @@
-on:
+"on":
   push:
     branches:
     - master
-name: Release
+name: release
 jobs:
-  golangci:
-    name: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          # Optional: version of golangci-lint to use in form of v1.2 or v1.2.3 or latest to use the latest version
-          version: latest
-
-          # Optional: working directory, useful for monorepos
-          # working-directory: somedir
-
-          # Optional: golangci-lint command line arguments.
-          # args: --issues-exit-code=0
-
-          # Optional: show only new issues if it's a pull request. The default value is false
-          # only-new-issues: true
-
-          # Optional: if set to true then the action will use pre-installed Go.
-          # skip-go-installation: true
-          args: --timeout=5m
-
-          # Optional: if set to true then the action don't cache or restore ~/go/pkg.
-          skip-pkg-cache: true
-
-          # Optional: if set to true then the action don't cache or restore ~/.cache/go-build.
-          skip-build-cache: true
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Install Go
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.17
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: build and run gojen
-      run: "go build && ./gojen --ci"
-    - name: Upload code coverage
+        go-version: "1.17"
+    - name: Build and run gojen
+      run: go build && ./gojen --ci
+    - name: Upload codecov coverage
       uses: codecov/codecov-action@v2
       with:
         files: ./coverage.txt
+    - id: git_diff
+      name: Check for changes
+      run: git diff --exit-code || echo "::set-output name=has_changes::true"
+    - if: steps.git_diff.outputs.has_changes
+      name: Exit 1 if changes found
+      run: exit 1
+    name: build
+  golangci:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Lint using golangci-lint
+      uses: golangci/golangci-lint-action@v2
+      with:
+        args: --timeout=5m
+    name: lint
   release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - id: create-release
+      name: Create Release
+      uses: go-semantic-release/action@v1
+      with:
+        changelog-generator-opts: emojis=false
+        force-bump-patch-version: true
+        github-token: ${{ secrets.GIT_TOKEN }}
+    name: create release
     needs:
     - golangci
     - build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: go-semantic-release/action@v1
-        id: semrel
-        with:
-          github-token: ${{ secrets.GIT_TOKEN }}
-          changelog-generator-opt: "emojis=false"
-          force-bump-patch-version: true

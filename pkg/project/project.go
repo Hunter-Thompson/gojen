@@ -9,6 +9,8 @@ import (
 	"os/exec"
 	"reflect"
 	"strings"
+
+	"github.com/Hunter-Thompson/gojen/pkg/github"
 )
 
 var CI bool
@@ -41,6 +43,7 @@ type IProject interface {
 	IsIsGojen() bool
 	IsCreateReadme() bool
 	IsCodeCov() bool
+	GetTestEnvVars() []string
 }
 
 type Project struct {
@@ -57,12 +60,13 @@ type Project struct {
 	Readme       *bool   `yaml:"readme" json:"readme"`
 	GojenVersion *string `yaml:"gojenVersion" json:"gojenVersion"`
 
-	Release              *bool   `yaml:"release" json:"release"`
-	BuildWorkflow        *bool   `yaml:"buildWorkflow" json:"buildWorkflow"`
-	GithubToken          *string `yaml:"githubToken" json:"githubToken"`
-	DefaultReleaseBranch *string `yaml:"defaultReleaseBranch" json:"defaultReleaseBranch"`
-	IsGojen              *bool   `yaml:"isGojen" json:"isGojen"`
-	CodeCov              *bool   `yaml:"codeCov" json:"codeCov"`
+	Release              *bool     `yaml:"release" json:"release"`
+	BuildWorkflow        *bool     `yaml:"buildWorkflow" json:"buildWorkflow"`
+	GithubToken          *string   `yaml:"githubToken" json:"githubToken"`
+	DefaultReleaseBranch *string   `yaml:"defaultReleaseBranch" json:"defaultReleaseBranch"`
+	IsGojen              *bool     `yaml:"isGojen" json:"isGojen"`
+	CodeCov              *bool     `yaml:"codeCov" json:"codeCov"`
+	TestEnvVars          *[]string `yaml:"testEnvVars" json:"testEnvVars"`
 
 	Gitignore  *[]string `yaml:"gitignore" json:"gitignore"`
 	CodeOwners *[]string `yaml:"codeOwners" json:"codeOwners"`
@@ -381,6 +385,99 @@ func (proj *Project) RunLinter() error {
 
 }
 
+func getCommonSteps(isGojen bool, isCodeCov bool, gojenVersion string, goVersion string) []*github.JobStep {
+
+	wf := []*github.JobStep{}
+
+	wf = append(wf, &github.JobStep{
+		Name: String("Setup go"),
+		Uses: String("actions/setup-go@v2"),
+		With: &map[string]interface{}{
+			"go-version": goVersion,
+		},
+	})
+
+	if isGojen {
+		wf = append(wf, &github.JobStep{
+			Name: String("Build and run gojen"),
+			Run:  String("go build && ./gojen --ci"),
+		})
+	} else {
+		wf = append(wf, &github.JobStep{
+			Name: String("Install gojen"),
+			Run:  String(fmt.Sprintf("go install github.com/gojen/gojen@%s", gojenVersion)),
+		})
+		wf = append(wf, &github.JobStep{
+			Name: String("Run gojen"),
+			Run:  String("gojen --ci"),
+		})
+	}
+
+	if isCodeCov {
+		wf = append(wf, &github.JobStep{
+			Name: String("Upload codecov coverage"),
+			Uses: String("codecov/codecov-action@v2"),
+			With: &map[string]interface{}{
+				"files": String("./coverage.txt"),
+			},
+		})
+	}
+
+	wf = append(wf, &github.JobStep{
+		Name: String("Check for changes"),
+		Id:   String("git_diff"),
+		Run:  String("git diff --exit-code || echo \"::set-output name=has_changes::true\""),
+	})
+
+	return wf
+}
+
+func setCommonJobs(wf github.IAction, isGojen bool, isCodeCov bool, gojenVersion string, goVersion string) (github.IAction, error) {
+	wf.AddJobs(map[string]*github.Job{
+		"golangci": {
+			Name:   String("lint"),
+			RunsOn: String("ubuntu-latest"),
+			Steps: &[]*github.JobStep{
+				{
+					Name: String("Checkout"),
+					Uses: String("actions/checkout@v2"),
+				},
+				{
+					Name: String("Lint using golangci-lint"),
+					Uses: String("golangci/golangci-lint-action@v2"),
+					With: &map[string]interface{}{
+						"args": String("--timeout=5m"),
+					},
+				},
+			},
+		},
+	})
+
+	wf.AddJobs(map[string]*github.Job{
+		"build": {
+			Name:   String("build"),
+			RunsOn: String("ubuntu-latest"),
+			Steps: &[]*github.JobStep{
+				{
+					Name: String("Checkout"),
+					Uses: String("actions/checkout@v2"),
+				},
+			},
+		},
+	})
+
+	j := getCommonSteps(isGojen, isCodeCov, gojenVersion, goVersion)
+
+	for _, v := range j {
+		err := wf.AddStep("build", v)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return wf, nil
+}
+
 func (proj *Project) CreateReleaseWorkflow() error {
 
 	fmt.Println("creating release workflow")
@@ -395,112 +492,104 @@ func (proj *Project) CreateReleaseWorkflow() error {
 		return err
 	}
 
-	var gojenCommand string
+	wf := github.CreateWorkflow("release")
 
-	if proj.IsIsGojen() {
-		gojenCommand = `- name: build and run gojen
-      run: "go build && ./gojen --ci"`
-	} else {
-		gojenCommand = fmt.Sprintf(`- name: Install gojen
-      run: go install github.com/Hunter-Thompson/gojen@v%s
-    - name: Run gojen
-      run: gojen --ci`, proj.GetGojenVersion())
-	}
+	wf.AddTrigger(github.Triggers{
+		Push: &github.PushOptions{
+			Branches: &[]*string{
+				proj.DefaultReleaseBranch,
+			},
+		},
+	})
 
-	var codeCovUpload string
-
-	if proj.IsCodeCov() {
-		codeCovUpload = `- name: Upload code coverage
-      uses: codecov/codecov-action@v2
-      with:
-        files: ./coverage.txt`
-	}
-
-	c := fmt.Sprintf(`on:
-  push:
-    branches:
-    - %s
-name: Release
-jobs:
-  golangci:
-    name: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          # Optional: version of golangci-lint to use in form of v1.2 or v1.2.3 or latest to use the latest version
-          version: latest
-
-          # Optional: working directory, useful for monorepos
-          # working-directory: somedir
-
-          # Optional: golangci-lint command line arguments.
-          # args: --issues-exit-code=0
-
-          # Optional: show only new issues if it's a pull request. The default value is false
-          # only-new-issues: true
-
-          # Optional: if set to true then the action will use pre-installed Go.
-          # skip-go-installation: true
-          args: --timeout=5m
-
-          # Optional: if set to true then the action don't cache or restore ~/go/pkg.
-          skip-pkg-cache: true
-
-          # Optional: if set to true then the action don't cache or restore ~/.cache/go-build.
-          skip-build-cache: true
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Install Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: %s
-    - name: Checkout code
-      uses: actions/checkout@v2
-    %s
-    %s
-  release:
-    needs:
-    - golangci
-    - build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: go-semantic-release/action@v1
-        id: semrel
-        with:
-          github-token: ${{ secrets.%s }}
-          changelog-generator-opt: "emojis=false"
-          force-bump-patch-version: true`, proj.GetDefaultReleaseBranch(), proj.GetGoVersion(), gojenCommand, codeCovUpload, proj.GetGitHubToken())
-
-	err = ioutil.WriteFile(fmt.Sprintf("%s/.github/workflows/release.yml", pwd), []byte(c), 0644)
+	wf, err = setCommonJobs(wf, proj.IsIsGojen(), proj.IsCodeCov(), proj.GetGojenVersion(), proj.GetGoVersion())
 	if err != nil {
 		return err
 	}
 
-	c = fmt.Sprintf(`name: upload binary
+	err = wf.AddStep("build", &github.JobStep{
+		Name: String("Exit 1 if changes found"),
+		If:   String("steps.git_diff.outputs.has_changes"),
+		Run:  String("exit 1"),
+	})
+	if err != nil {
+		return err
+	}
 
-on:
-  release:
-    types: [published]
+	wf.AddJobs(map[string]*github.Job{
+		"release": {
+			Name:   String("create release"),
+			RunsOn: String("ubuntu-latest"),
+			Needs: &[]*string{
+				String("golangci"),
+				String("build"),
+			},
+			Steps: &[]*github.JobStep{
+				{
+					Name: String("Checkout"),
+					Uses: String("actions/checkout@v2"),
+				},
+				{
+					Name: String("Create Release"),
+					Uses: String("go-semantic-release/action@v1"),
+					Id:   String("create-release"),
+					With: &map[string]interface{}{
+						"github-token":             fmt.Sprintf("${{ secrets.%s }}", proj.GetGitHubToken()),
+						"changelog-generator-opts": "emojis=false",
+						"force-bump-patch-version": true,
+					},
+				},
+			},
+		},
+	})
 
-jobs:
-  release:
-    name: release 
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: wangyoucao577/go-release-action@v1.19
-      with:
-        github_token: ${{ secrets.%s }}
-        goos: linux
-        goarch: amd64
-        goversion: %s`, proj.GetGitHubToken(), proj.GetGoVersion())
+	yaml, err := wf.ConvertToYAML()
+	if err != nil {
+		return err
+	}
 
-	err = ioutil.WriteFile(fmt.Sprintf("%s/.github/workflows/upload-binary.yml", pwd), []byte(c), 0644)
+	err = ioutil.WriteFile(fmt.Sprintf("%s/.github/workflows/release.yml", pwd), yaml, 0644)
+	if err != nil {
+		return err
+	}
+
+	wf2 := github.CreateWorkflow("Upload Binary")
+
+	wf2.AddTrigger(github.Triggers{
+		Release: &github.ReleaseOptions{
+			Types: &[]*string{String("published")},
+		},
+	})
+
+	wf2.AddJobs(map[string]*github.Job{
+		"upload-binary": {
+			Name:   String("upload binary"),
+			RunsOn: String("ubuntu-latest"),
+			Steps: &[]*github.JobStep{
+				{
+					Name: String("Checkout"),
+					Uses: String("actions/checkout@v2"),
+				},
+				{
+					Name: String("Upload binary"),
+					Uses: String("wangyoucao577/go-release-action@v1.19"),
+					With: &map[string]interface{}{
+						"github-token": proj.GetGitHubToken(),
+						"goos":         "linux",
+						"goarch":       "amd64",
+						"go-version":   proj.GetGoVersion(),
+					},
+				},
+			},
+		},
+	})
+
+	yaml2, err := wf2.ConvertToYAML()
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(fmt.Sprintf("%s/.github/workflows/upload-binary.yml", pwd), yaml2, 0644)
 	if err != nil {
 		return err
 	}
@@ -522,97 +611,59 @@ func (proj *Project) CreateBuildWorkflow() error {
 		return err
 	}
 
-	var gojenCommand string
+	wf := github.CreateWorkflow("build")
 
-	if proj.IsIsGojen() {
-		gojenCommand = `- name: build and run gojen
-      run: "go build && ./gojen --ci"`
-	} else {
-		gojenCommand = fmt.Sprintf(`- name: Install gojen
-      run: go install github.com/Hunter-Thompson/gojen@v%s
-    - name: Run gojen
-      run: gojen --ci`, proj.GetGojenVersion())
+	wf.AddTrigger(github.Triggers{
+		PullRequest: &github.PullRequestOptions{},
+	})
+
+	wf, err = setCommonJobs(wf, proj.IsIsGojen(), proj.IsCodeCov(), proj.GetGojenVersion(), proj.GetGoVersion())
+	if err != nil {
+		return err
 	}
 
-	var codeCovUpload string
-
-	if proj.IsCodeCov() {
-		codeCovUpload = `- name: Upload code coverage
-      uses: codecov/codecov-action@v2
-      with:
-        files: ./coverage.txt`
+	err = wf.AddStep("build", &github.JobStep{
+		Name: String("Commit and push changes (if changed)"),
+		If:   String("steps.git_diff.outputs.has_changes"),
+		Run: String(`git add . && git commit -m 'chore: self mutation && git push origin
+HEAD:${{ github.event.pull_request.head.ref }}'`),
+	})
+	if err != nil {
+		return err
 	}
 
-	c := fmt.Sprintf(`name: Build
-on:
-  pull_request: {}
+	err = wf.AddStep("build", &github.JobStep{
+		Name: String("Update status check (if changed)"),
+		If:   String("steps.git_diff.outputs.has_changes"),
+		Run: String(`gh api -X POST /repos/${{ github.event.pull_request.head.repo.full_name
+}}/check-runs -F name="build" -F head_sha="$(git rev-parse HEAD)" -F status="completed" -F conclusion="success`),
+		Env: &map[string]*string{
+			"GITHUB_TOKEN": String(fmt.Sprintf("${{ secrets.%s }}", proj.GetGitHubToken())),
+		},
+	})
+	if err != nil {
+		return err
+	}
 
-jobs:
-  golangci:
-    name: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          # Optional: version of golangci-lint to use in form of v1.2 or v1.2.3 or latest to use the latest version
-          version: latest
+	err = wf.AddStep("build", &github.JobStep{
+		Name: String("Cancel workflow (if changed)"),
+		If:   String("steps.git_diff.outputs.has_changes"),
+		Run: String(`gh api -X POST /repos/${{ github.event.pull_request.head.repo.full_name
+}}/actions/runs/${{ github.run_id }}/cancel`),
+		Env: &map[string]*string{
+			"GITHUB_TOKEN": String(fmt.Sprintf("${{ secrets.%s }}", proj.GetGitHubToken())),
+		},
+	})
+	if err != nil {
+		return err
+	}
 
-          # Optional: working directory, useful for monorepos
-          # working-directory: somedir
+	yaml, err := wf.ConvertToYAML()
+	if err != nil {
+		return err
+	}
 
-          # Optional: golangci-lint command line arguments.
-          # args: --issues-exit-code=0
-
-          # Optional: show only new issues if it's a pull request. The default value is false
-          # only-new-issues: true
-
-          # Optional: if set to true then the action will use pre-installed Go.
-          # skip-go-installation: true
-          args: --timeout=5m
-
-          # Optional: if set to true then the action don't cache or restore ~/go/pkg.
-          skip-pkg-cache: true
-
-          # Optional: if set to true then the action don't cache or restore ~/.cache/go-build.
-          skip-build-cache: true
-  build:
-    runs-on: ubuntu-latest
-    name: Build
-    steps:
-    - name: Setup go 
-      uses: actions/setup-go@v2
-      with:
-        go-version: %s
-    - uses: actions/checkout@v2
-      with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-    %s
-    %s
-    - name: Check for changes
-      id: git_diff
-      run: git diff --exit-code || echo "::set-output name=has_changes::true"
-    - if: steps.git_diff.outputs.has_changes
-      name: Commit and push changes (if changed)
-      run: 'git add . && git commit -m "chore: self mutation" && git push origin
-        HEAD:${{ github.event.pull_request.head.ref }}'
-    - if: steps.git_diff.outputs.has_changes
-      name: Update status check (if changed)
-      run: gh api -X POST /repos/${{ github.event.pull_request.head.repo.full_name
-        }}/check-runs -F name="build" -F head_sha="$(git rev-parse HEAD)" -F
-        status="completed" -F conclusion="success"
-      env:
-        GITHUB_TOKEN: ${{ secrets.%s }}
-    - if: steps.git_diff.outputs.has_changes
-      name: Cancel workflow (if changed)
-      run: gh api -X POST /repos/${{ github.event.pull_request.head.repo.full_name
-        }}/actions/runs/${{ github.run_id }}/cancel
-      env:
-        GITHUB_TOKEN: ${{ secrets.%s }}`, proj.GetGoVersion(), gojenCommand, codeCovUpload, proj.GetGitHubToken(), proj.GetGitHubToken())
-
-	err = ioutil.WriteFile(fmt.Sprintf("%s/.github/workflows/build.yml", pwd), []byte(c), 0644)
+	err = ioutil.WriteFile(fmt.Sprintf("%s/.github/workflows/build.yml", pwd), yaml, 0644)
 	if err != nil {
 		return err
 	}
@@ -749,7 +800,7 @@ func (proj *Project) IsIsGojen() bool {
 
 func (proj *Project) GetGojenVersion() string {
 	if proj.GojenVersion == nil {
-		return "0.1.0"
+		return "latest"
 	}
 	return *proj.GojenVersion
 }
@@ -766,6 +817,13 @@ func (proj *Project) IsCodeCov() bool {
 		return false
 	}
 	return *proj.CodeCov
+}
+
+func (proj *Project) GetTestEnvVars() []string {
+	if proj.TestEnvVars == nil {
+		return []string{}
+	}
+	return *proj.TestEnvVars
 }
 
 func String(str string) *string {

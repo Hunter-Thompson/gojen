@@ -1,0 +1,19 @@
+name: asd
+jobs:
+  asd:
+    runs-on: ubuntu-latest
+    steps:
+    - name: asdjob
+      run: echo asd
+    - name: appendtest
+      run: echo asd
+    name: asd
+  dsa:
+    runs-on: ubuntu-latest
+    steps:
+    - name: prependtest
+      run: echo asd
+    - name: dsajob
+      run: echo asd
+    name: dsa
+

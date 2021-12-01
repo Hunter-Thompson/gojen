@@ -1,72 +1,52 @@
-name: Build
-on:
-  pull_request: {}
-
+"on":
+  pull-request: {}
+name: build
 jobs:
-  golangci:
-    name: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          # Optional: version of golangci-lint to use in form of v1.2 or v1.2.3 or latest to use the latest version
-          version: latest
-
-          # Optional: working directory, useful for monorepos
-          # working-directory: somedir
-
-          # Optional: golangci-lint command line arguments.
-          # args: --issues-exit-code=0
-
-          # Optional: show only new issues if it's a pull request. The default value is false
-          # only-new-issues: true
-
-          # Optional: if set to true then the action will use pre-installed Go.
-          # skip-go-installation: true
-          args: --timeout=5m
-
-          # Optional: if set to true then the action don't cache or restore ~/go/pkg.
-          skip-pkg-cache: true
-
-          # Optional: if set to true then the action don't cache or restore ~/.cache/go-build.
-          skip-build-cache: true
   build:
     runs-on: ubuntu-latest
-    name: Build
     steps:
-    - name: Setup go 
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.17
-    - uses: actions/checkout@v2
-      with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-    - name: build and run gojen
-      run: "go build && ./gojen --ci"
-    - name: Upload code coverage
+        go-version: "1.17"
+    - name: Build and run gojen
+      run: go build && ./gojen --ci
+    - name: Upload codecov coverage
       uses: codecov/codecov-action@v2
       with:
         files: ./coverage.txt
-    - name: Check for changes
-      id: git_diff
+    - id: git_diff
+      name: Check for changes
       run: git diff --exit-code || echo "::set-output name=has_changes::true"
     - if: steps.git_diff.outputs.has_changes
       name: Commit and push changes (if changed)
-      run: 'git add . && git commit -m "chore: self mutation" && git push origin
+      run: |-
+        git add . && git commit -m 'chore: self mutation && git push origin
         HEAD:${{ github.event.pull_request.head.ref }}'
-    - if: steps.git_diff.outputs.has_changes
+    - env:
+        GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+      if: steps.git_diff.outputs.has_changes
       name: Update status check (if changed)
-      run: gh api -X POST /repos/${{ github.event.pull_request.head.repo.full_name
-        }}/check-runs -F name="build" -F head_sha="$(git rev-parse HEAD)" -F
-        status="completed" -F conclusion="success"
-      env:
+      run: |-
+        gh api -X POST /repos/${{ github.event.pull_request.head.repo.full_name
+        }}/check-runs -F name="build" -F head_sha="$(git rev-parse HEAD)" -F status="completed" -F conclusion="success
+    - env:
         GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
-    - if: steps.git_diff.outputs.has_changes
+      if: steps.git_diff.outputs.has_changes
       name: Cancel workflow (if changed)
-      run: gh api -X POST /repos/${{ github.event.pull_request.head.repo.full_name
+      run: |-
+        gh api -X POST /repos/${{ github.event.pull_request.head.repo.full_name
         }}/actions/runs/${{ github.run_id }}/cancel
-      env:
-        GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+    name: build
+  golangci:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Lint using golangci-lint
+      uses: golangci/golangci-lint-action@v2
+      with:
+        args: --timeout=5m
+    name: lint
