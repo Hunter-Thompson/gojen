@@ -13,7 +13,7 @@ jobs:
       uses: wangyoucao577/go-release-action@v1.19
       with:
         github_token: ${{ secrets.GIT_TOKEN }}
-        go-version: "1.17"
         goarch: amd64
         goos: linux
+        goversion: "1.17"
     name: upload binary

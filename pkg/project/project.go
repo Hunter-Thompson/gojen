@@ -577,7 +577,7 @@ func (proj *Project) CreateReleaseWorkflow() error {
 						"github_token": fmt.Sprintf("${{ secrets.%s }}", proj.GetGitHubToken()),
 						"goos":         "linux",
 						"goarch":       "amd64",
-						"go-version":   proj.GetGoVersion(),
+						"goversion":    proj.GetGoVersion(),
 					},
 				},
 			},
