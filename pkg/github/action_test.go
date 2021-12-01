@@ -11,6 +11,11 @@ import (
 
 func TestA(t *testing.T) {
 	a := github.CreateWorkflow("asd")
+	a.AddTrigger(github.Triggers{
+		PullRequest: &github.PullRequestOptions{
+			Types: &[]*string{project.String("opened"), project.String("edited")},
+		},
+	})
 	a.AddJobs(map[string]*github.Job{
 		"asd": {
 			Name:   project.String("asd"),

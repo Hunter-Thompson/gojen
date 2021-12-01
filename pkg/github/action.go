@@ -388,11 +388,11 @@ type JobPermissions struct {
 	// Experimental.
 	Packages JobPermission `yaml:"packages,omitempty"`
 	// Experimental.
-	PullRequests JobPermission `yaml:"pull-requests,omitempty"`
+	PullRequests JobPermission `yaml:"pull_requests,omitempty"`
 	// Experimental.
-	RepositoryProjects JobPermission `yaml:"repository-projects,omitempty"`
+	RepositoryProjects JobPermission `yaml:"repository_projects,omitempty"`
 	// Experimental.
-	SecurityEvents JobPermission `yaml:"security-events,omitempty"`
+	SecurityEvents JobPermission `yaml:"security_events,omitempty"`
 	// Experimental.
 	Statuses JobPermission `yaml:"statuses,omitempty"`
 }
@@ -690,7 +690,7 @@ type StatusOptions struct {
 type Triggers struct {
 	// Runs your workflow anytime the check_run event occurs.
 	// Experimental.
-	CheckRun *CheckRunOptions `yaml:"check-run,omitempty"`
+	CheckRun *CheckRunOptions `yaml:"check_run,omitempty"`
 	// Runs your workflow anytime the check_suite event occurs.
 	// Experimental.
 	CheckSuite *CheckSuiteOptions `yaml:"check-suite,omitempty"`
@@ -711,7 +711,7 @@ type Triggers struct {
 	// Deployments created with a
 	// commit SHA may not have a Git ref.
 	// Experimental.
-	DeploymentStatus *DeploymentStatusOptions `yaml:"deployment-status,omitempty"`
+	DeploymentStatus *DeploymentStatusOptions `yaml:"deployment_status,omitempty"`
 	// Runs your workflow anytime when someone forks a repository, which triggers the fork event.
 	// Experimental.
 	Fork *ForkOptions `yaml:"fork,omitempty"`
@@ -720,7 +720,7 @@ type Triggers struct {
 	Gollum *GollumOptions `yaml:"gollum,omitempty"`
 	// Runs your workflow anytime the issue_comment event occurs.
 	// Experimental.
-	IssueComment *IssueCommentOptions `yaml:"issue-comment,omitempty"`
+	IssueComment *IssueCommentOptions `yaml:"issue_comment,omitempty"`
 	// Runs your workflow anytime the issues event occurs.
 	// Experimental.
 	Issues *IssuesOptions `yaml:"issues,omitempty"`
@@ -732,28 +732,28 @@ type Triggers struct {
 	Milestone *MilestoneOptions `yaml:"milestone,omitempty"`
 	// Runs your workflow anytime someone pushes to a GitHub Pages-enabled branch, which triggers the page_build event.
 	// Experimental.
-	PageBuild *PageBuildOptions `yaml:"page-build,omitempty"`
+	PageBuild *PageBuildOptions `yaml:"page_build,omitempty"`
 	// Runs your workflow anytime the project event occurs.
 	// Experimental.
 	Project *ProjectOptions `yaml:"project,omitempty"`
 	// Runs your workflow anytime the project_card event occurs.
 	// Experimental.
-	ProjectCard *ProjectCardOptions `yaml:"project-card,omitempty"`
+	ProjectCard *ProjectCardOptions `yaml:"project_card,omitempty"`
 	// Runs your workflow anytime the project_column event occurs.
 	// Experimental.
-	ProjectColumn *ProjectColumnOptions `yaml:"project-column,omitempty"`
+	ProjectColumn *ProjectColumnOptions `yaml:"project_column,omitempty"`
 	// Runs your workflow anytime someone makes a private repository public, which triggers the public event.
 	// Experimental.
 	Public *PublicOptions `yaml:"public,omitempty"`
 	// Runs your workflow anytime the pull_request event occurs.
 	// Experimental.
-	PullRequest *PullRequestOptions `yaml:"pull-request,omitempty"`
+	PullRequest *PullRequestOptions `yaml:"pull_request,omitempty"`
 	// Runs your workflow anytime the pull_request_review event occurs.
 	// Experimental.
-	PullRequestReview *PullRequestReviewOptions `yaml:"pull-request-review,omitempty"`
+	PullRequestReview *PullRequestReviewOptions `yaml:"pull_request_review,omitempty"`
 	// Runs your workflow anytime a comment on a pull request's unified diff is modified, which triggers the pull_request_review_comment event.
 	// Experimental.
-	PullRequestReviewComment *PullRequestReviewCommentOptions `yaml:"pull-request-review-comment,omitempty"`
+	PullRequestReviewComment *PullRequestReviewCommentOptions `yaml:"pull_request_review_comment,omitempty"`
 	// This event runs in the context of the base of the pull request, rather than in the merge commit as the pull_request event does.
 	//
 	// This prevents
