@@ -45,7 +45,7 @@ jobs:
       name: Create Release
       uses: go-semantic-release/action@v1
       with:
-        changelog-generator-opts: emojis=false
+        changelog-generator-opt: emojis=false
         force-bump-patch-version: true
         github-token: ${{ secrets.GIT_TOKEN }}
     name: create release
