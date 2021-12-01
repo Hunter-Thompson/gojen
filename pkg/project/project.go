@@ -405,7 +405,7 @@ func getCommonSteps(isGojen bool, isCodeCov bool, gojenVersion string, goVersion
 	} else {
 		wf = append(wf, &github.JobStep{
 			Name: String("Install gojen"),
-			Run:  String(fmt.Sprintf("go install github.com/gojen/gojen@%s", gojenVersion)),
+			Run:  String(fmt.Sprintf("go install github.com/Hunter-Thompson/gojen@%s", gojenVersion)),
 		})
 		wf = append(wf, &github.JobStep{
 			Name: String("Run gojen"),
