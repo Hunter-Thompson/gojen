@@ -21,6 +21,7 @@ type IProject interface {
 	SetGitignore() error
 	CreateReadme() error
 	RunTest() error
+	RunBuild() error
 	RunLinter() error
 
 	GetName() string
@@ -31,6 +32,7 @@ type IProject interface {
 	GetAuthorOrganization() string
 	IsLicensed() bool
 	IsRelease() bool
+	IsGoBuild() bool
 	GetDefaultReleaseBranch() string
 	GetGitignore() []string
 	GetCodeOwners() []string
@@ -44,6 +46,7 @@ type IProject interface {
 	IsCreateReadme() bool
 	IsCodeCov() bool
 	GetTestEnvVars() []string
+	GetGoBuildArgs() []string
 }
 
 type Project struct {
@@ -71,9 +74,11 @@ type Project struct {
 	Gitignore  *[]string `yaml:"gitignore" json:"gitignore"`
 	CodeOwners *[]string `yaml:"codeOwners" json:"codeOwners"`
 
-	GoLinter   *bool     `yaml:"goLinter" json:"goLinter"`
-	GoTest     *bool     `yaml:"goTest" json:"goTest"`
-	GoTestArgs *[]string `yaml:"goTestArgs" json:"goTestArgs"`
+	GoLinter    *bool     `yaml:"goLinter" json:"goLinter"`
+	GoTest      *bool     `yaml:"goTest" json:"goTest"`
+	GoTestArgs  *[]string `yaml:"goTestArgs" json:"goTestArgs"`
+	GoBuild     *bool     `yaml:"goBuild" json:"goBuild"`
+	GoBuildArgs *[]string `yaml:"goBuildArgs" json:"goBuildArgs"`
 }
 
 func InitProject() (IProject, error) {
@@ -272,10 +277,21 @@ func main () {
 		}
 	}
 
+	if proj.IsGoBuild() {
+		err = proj.RunBuild()
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
 func (proj *Project) RunTest() error {
+
+	if proj.GoTestArgs == nil {
+		proj.GoTestArgs = &[]string{}
+	}
 
 	fmt.Println("running go test")
 	*proj.GoTestArgs = append([]string{"test"}, *proj.GoTestArgs...)
@@ -289,6 +305,29 @@ func (proj *Project) RunTest() error {
 
 	fmt.Print(string(out))
 	fmt.Println("go test passed")
+	return nil
+}
+
+func (proj *Project) RunBuild() error {
+	fmt.Println("running go build")
+	if proj.GoBuildArgs == nil {
+		proj.GoBuildArgs = &[]string{}
+	}
+
+	proj.GoTestArgs = &[]string{}
+
+	*proj.GoBuildArgs = append([]string{"build"}, *proj.GoBuildArgs...)
+	fmt.Println("go build args:", proj.GoBuildArgs)
+
+	out, err := exec.Command("go", *proj.GoBuildArgs...).CombinedOutput()
+	if err != nil {
+		fmt.Println("running go build failed")
+		return errors.New(string(out))
+	}
+
+	fmt.Print(string(out))
+	fmt.Println("go build passed")
+
 	return nil
 }
 
@@ -824,6 +863,20 @@ func (proj *Project) GetTestEnvVars() []string {
 		return []string{}
 	}
 	return *proj.TestEnvVars
+}
+
+func (proj *Project) GetGoBuildArgs() []string {
+	if proj.GoBuildArgs == nil {
+		return []string{}
+	}
+	return *proj.GoBuildArgs
+}
+
+func (proj *Project) IsGoBuild() bool {
+	if proj.GoBuild == nil {
+		return true
+	}
+	return *proj.GoBuild
 }
 
 func String(str string) *string {

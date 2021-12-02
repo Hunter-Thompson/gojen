@@ -15,7 +15,9 @@ limitations under the License.
 */
 package main
 
-import "github.com/Hunter-Thompson/gojen/cmd"
+import (
+	"github.com/Hunter-Thompson/gojen/cmd"
+)
 
 func main() {
 	cmd.Execute()
