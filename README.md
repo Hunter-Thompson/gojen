@@ -4,31 +4,54 @@
 
 Define your go project's configuration using a json config. This config can be used to generate a new go project for you, and can also create configs for different tools.
 
+This project also helps you maintain your code after the scaffolding process, simply run `gojen` to vendor deps, tidy them, fmt your code, `golangci-lint run`, `go test` and `go build` your code.
+
+
+```
+$ gojen
+ℹ  | Setup | running go mod vendor
+ℹ  | Setup | running go mod tidy
+ℹ  | Setup | running go fmt
+ℹ  | Lint | running go linter
+✅  | Lint | go linter passed
+ℹ  | Test | running go test
+✅  | Test | go test passed
+ℹ  | Build | running go build
+✅  | Build | go build passed
+```
+---
 ## Features
 
-- Release workflow
+**Release workflow**
 
-If you choose to enable the release workflow, gojen creates a Github actions workflow that simply runs `gojen`, which lints your code using `golangci-lint`, runs your tests according to the config, and then creates a release on Github using `semantic-go-release`. After that it uploads a binary of your built project as an attachment.
+Github actions workflow that simply runs the `golangci-lint` action, followed by `gojen` to vendor/tidy/fmt/test/build our code, a release job that creates a github release, and finally another workflow that uploads our built binary to the release we just created.
 
-- Build workflow
+Is triggered on a push to the `defaultReleaseBranch` inside `gojen.json`.
 
-gojen creates a Github workflow that runs the `gojen` cli, which builds lints/tests/builds your project.
+**Build workflow**
 
-- Gitignore
+Github workflow that runs the `golangci-lint` action, followed by `gojen`. Is triggered on pull request creation.
 
-You can define all your gitignore entries inside `gojen.json`
+**Gitignore**
 
-- Codeowners 
+Define all your gitignore entries inside `gojen.json`
 
-You can define all your codeowners entries inside `gojen.json`
+**Codeowners**
 
-- Golangci-lint
+Define all your codeowners inside `gojen.json`
+
+**Golangci-lint**
 
 Lint your code using golangci-lint
 
-- Gotest 
+**go test**
 
-Arguments for the go test command
+Test your code using `go test`. You can also append test arguments to `go test` by adding your arguments to the `goTestArgs` slice inside `gojen.json`
+
+**go build**
+
+Build your binary using the `go build` command. You can also append build arguments to `go build` by adding your arguments to the `goBuildArgs` slice inside `gojen.json`
+
 
 ## Getting started
 
@@ -70,7 +93,8 @@ printf "{
 	  "-v",
 	  "-cover",
 	  "./..."
-  ]
+  ],
+  "goBuildArgs: ["arg1"],
 }" > gojen.json
 ```
 
@@ -87,6 +111,7 @@ Runing `gojen` after the project has been created does the following things:
 - go fmt
 - golangci-lint
 - go test
+- go build
 
 ## Known issues
 
@@ -96,8 +121,7 @@ So please upload a GITHUB token inside the repo secrets, and add the key to the 
 
 ## Example project
 
-https://github.com/Hunter-Thompson/test-gojen
-
+https://github.com/Hunter-Thompson/test-gojen 
 https://github.com/Hunter-Thompson/gojen - yes gojen uses gojen : )
 
 ## Notes
