@@ -290,7 +290,8 @@ func (proj *Project) RunTest() error {
 		proj.GoTestArgs = &[]string{}
 	}
 
-	LogInfo(os.Stdout, "running go test", "Test")
+	  LogInfo(os.Stdout, "running go test", "Test")
+
 	*proj.GoTestArgs = append([]string{"test"}, *proj.GoTestArgs...)
 
 	out, err := exec.Command("go", *proj.GoTestArgs...).CombinedOutput()
@@ -320,6 +321,29 @@ func (proj *Project) RunBuild() error {
 	}
 
 	LogSuccess(os.Stdout, "go build passed", "Build")
+
+	return nil
+}
+
+func (proj *Project) RunBuild() error {
+	fmt.Println("running go build")
+	if proj.GoBuildArgs == nil {
+		proj.GoBuildArgs = &[]string{}
+	}
+
+	proj.GoTestArgs = &[]string{}
+
+	*proj.GoBuildArgs = append([]string{"build"}, *proj.GoBuildArgs...)
+	fmt.Println("go build args:", proj.GoBuildArgs)
+
+	out, err := exec.Command("go", *proj.GoBuildArgs...).CombinedOutput()
+	if err != nil {
+		fmt.Println("running go build failed")
+		return errors.New(string(out))
+	}
+
+	fmt.Print(string(out))
+	fmt.Println("go build passed")
 
 	return nil
 }
