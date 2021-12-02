@@ -8,6 +8,9 @@ github.com/davecgh/go-spew/spew
 # github.com/inconshreveable/mousetrap v1.0.0
 ## explicit
 github.com/inconshreveable/mousetrap
+# github.com/kyokomi/emoji/v2 v2.2.8
+## explicit; go 1.14
+github.com/kyokomi/emoji/v2
 # github.com/pmezard/go-difflib v1.0.0
 ## explicit
 github.com/pmezard/go-difflib/difflib

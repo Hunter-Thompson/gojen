@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/bradleyjkemp/cupaloy/v2 v2.7.0
+	github.com/kyokomi/emoji/v2 v2.2.8
 	github.com/spf13/cobra v1.2.1
 	gopkg.in/yaml.v2 v2.4.0
 )

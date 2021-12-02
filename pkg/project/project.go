@@ -228,36 +228,33 @@ func main () {
 	if _, err := os.Stat(pwd + "/go.mod"); errors.Is(err, os.ErrNotExist) {
 		out, err := modInit.CombinedOutput()
 		if err != nil {
-			fmt.Println("running go mod init failed")
+			LogFail(os.Stderr, "running go mod init failed", "Setup")
 			return errors.New(string(out))
 		}
-		fmt.Print(string(out))
-	} else {
-		fmt.Println("go.mod already exists, moving on ...")
 	}
 
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("running go mod vendor")
+	LogInfo(os.Stdout, "running go mod vendor", "Setup")
 	out, err := vendor.CombinedOutput()
 	if err != nil {
-		fmt.Println("running go mod vendor failed")
+		LogFail(os.Stderr, "running go mod vendor failed", "Setup")
 		return errors.New(string(out))
 	}
 
-	fmt.Println("running go mod tidy")
+	LogInfo(os.Stdout, "running go mod tidy", "Setup")
 	out, err = tidy.CombinedOutput()
 	if err != nil {
-		fmt.Println("running go mod tidy failed")
+		LogFail(os.Stderr, "running go mod tidy failed", "Setup")
 		return errors.New(string(out))
 	}
 
-	fmt.Println("running go fmt")
+	LogInfo(os.Stdout, "running go fmt", "Setup")
 	out, err = gofmt.CombinedOutput()
 	if err != nil {
-		fmt.Println("running go fmt failed")
+		LogFail(os.Stderr, "running go fmt failed", "Setup")
 		return errors.New(string(out))
 	}
 
@@ -293,23 +290,21 @@ func (proj *Project) RunTest() error {
 		proj.GoTestArgs = &[]string{}
 	}
 
-	fmt.Println("running go test")
+	LogInfo(os.Stdout, "running go test", "Test")
 	*proj.GoTestArgs = append([]string{"test"}, *proj.GoTestArgs...)
-	fmt.Println("go test args:", proj.GoTestArgs)
 
 	out, err := exec.Command("go", *proj.GoTestArgs...).CombinedOutput()
 	if err != nil {
-		fmt.Println("running go test failed")
+		LogFail(os.Stderr, "running go test failed", "Test")
 		return errors.New(string(out))
 	}
 
-	fmt.Print(string(out))
-	fmt.Println("go test passed")
+	LogSuccess(os.Stdout, "go test passed", "Test")
 	return nil
 }
 
 func (proj *Project) RunBuild() error {
-	fmt.Println("running go build")
+	LogInfo(os.Stdout, "running go build", "Build")
 	if proj.GoBuildArgs == nil {
 		proj.GoBuildArgs = &[]string{}
 	}
@@ -317,16 +312,14 @@ func (proj *Project) RunBuild() error {
 	proj.GoTestArgs = &[]string{}
 
 	*proj.GoBuildArgs = append([]string{"build"}, *proj.GoBuildArgs...)
-	fmt.Println("go build args:", proj.GoBuildArgs)
 
 	out, err := exec.Command("go", *proj.GoBuildArgs...).CombinedOutput()
 	if err != nil {
-		fmt.Println("running go build failed")
+		LogFail(os.Stderr, "running go build failed", "Build")
 		return errors.New(string(out))
 	}
 
-	fmt.Print(string(out))
-	fmt.Println("go build passed")
+	LogSuccess(os.Stdout, "go build passed", "Build")
 
 	return nil
 }
@@ -394,8 +387,6 @@ func (proj *Project) SetCodeOwners() error {
 		if err != nil {
 			return err
 		}
-	} else {
-		fmt.Println("codeowners file exists, moving on ...")
 	}
 
 	contents := strings.Join(*proj.CodeOwners, "\n")
@@ -410,16 +401,15 @@ func (proj *Project) SetCodeOwners() error {
 
 func (proj *Project) RunLinter() error {
 
-	fmt.Println("running go linter")
+	LogInfo(os.Stdout, "running go linter", "Lint")
 
 	out, err := exec.Command("golangci-lint", "run").CombinedOutput()
 	if err != nil {
-		fmt.Println("running golint failed")
+		LogFail(os.Stderr, "running golint failed", "Lint")
 		return errors.New(string(out))
 	}
 
-	fmt.Print(string(out))
-	fmt.Println("go linter passed")
+	LogSuccess(os.Stdout, "go linter passed", "Lint")
 	return nil
 
 }
@@ -518,8 +508,6 @@ func setCommonJobs(wf github.IAction, isGojen bool, isCodeCov bool, gojenVersion
 }
 
 func (proj *Project) CreateReleaseWorkflow() error {
-
-	fmt.Println("creating release workflow")
 
 	pwd, err := os.Getwd()
 	if err != nil {
@@ -637,8 +625,6 @@ func (proj *Project) CreateReleaseWorkflow() error {
 }
 
 func (proj *Project) CreateBuildWorkflow() error {
-
-	fmt.Println("creating build workflow")
 
 	pwd, err := os.Getwd()
 	if err != nil {

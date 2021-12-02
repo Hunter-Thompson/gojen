@@ -23,7 +23,6 @@
   "codeCov": true,
   "githubToken": "GIT_TOKEN",
   "goTestArgs": [
-    "-v",
     "-cover",
     "./..."
     ],
