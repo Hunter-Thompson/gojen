@@ -19,7 +19,7 @@ func TestProject(t *testing.T) {
 		{
 			Name:                 project.String("test"),
 			Description:          project.String("test"),
-			Repository:           project.String("test"),
+			Repository:           project.String("github.com/test/test"),
 			AuthorName:           project.String("test"),
 			AuthorEmail:          project.String("test"),
 			AuthorOrganization:   project.String("test"),
@@ -32,11 +32,13 @@ func TestProject(t *testing.T) {
 			GoLinter:             project.Bool(true),
 			GoTest:               project.Bool(false),
 			GoTestArgs:           project.StringSlice([]string{"-v", "-cover", "./..."}),
+			GoBuild:              project.Bool(true),
+			GoBuildArgs:          project.StringSlice([]string{""}),
 		},
 		{
 			Name:                 project.String("test1"),
 			Description:          project.String("test1"),
-			Repository:           project.String("test1"),
+			Repository:           project.String("github.com/test/test1"),
 			AuthorName:           project.String("test1"),
 			AuthorEmail:          project.String("test1"),
 			AuthorOrganization:   project.String("test1"),
@@ -49,11 +51,13 @@ func TestProject(t *testing.T) {
 			GoTest:               project.Bool(true),
 			GoTestArgs:           project.StringSlice([]string{"-v", "-cover"}),
 			CodeCov:              project.Bool(true),
+			GoBuild:              project.Bool(true),
+			GoBuildArgs:          project.StringSlice([]string{""}),
 		},
 		{
 			Name:                 project.String("test2"),
 			Description:          project.String("test2"),
-			Repository:           project.String("test2"),
+			Repository:           project.String("github.com/test/test2"),
 			AuthorName:           project.String("test2"),
 			BuildWorkflow:        project.Bool(true),
 			AuthorEmail:          project.String("test2"),
@@ -68,12 +72,14 @@ func TestProject(t *testing.T) {
 			GoTestArgs:           project.StringSlice([]string{"", "-cover", "./..."}),
 			CodeCov:              project.Bool(true),
 			GojenVersion:         project.String("1.2.0"),
+			GoBuild:              project.Bool(false),
+			GoBuildArgs:          project.StringSlice([]string{""}),
 		},
 		{
 			Name:                 project.String("test3"),
 			Description:          project.String("test3"),
 			AuthorName:           project.String("test3"),
-			Repository:           project.String("test3"),
+			Repository:           project.String("github.com/test/test3"),
 			BuildWorkflow:        project.Bool(true),
 			AuthorEmail:          project.String("test3"),
 			AuthorOrganization:   project.String("test3"),
@@ -86,6 +92,23 @@ func TestProject(t *testing.T) {
 			GoTest:               project.Bool(false),
 			GoTestArgs:           project.StringSlice([]string{"-v", "-cover", "./..."}),
 			GojenVersion:         project.String("1.2.0"),
+			GoBuild:              project.Bool(true),
+			GoBuildArgs:          project.StringSlice([]string{""}),
+		},
+		{
+			Name:                 project.String("test4"),
+			Description:          project.String("test4"),
+			Repository:           project.String("github.com/test/test4"),
+			AuthorName:           project.String("test4"),
+			AuthorEmail:          project.String("test4"),
+			AuthorOrganization:   project.String("test4"),
+			Licensed:             project.Bool(true),
+			Release:              project.Bool(true),
+			DefaultReleaseBranch: project.String("test4"),
+			BuildWorkflow:        project.Bool(true),
+			Gitignore:            project.StringSlice([]string{"test", "test"}),
+			CodeOwners:           project.StringSlice([]string{"test", "test"}),
+			GoLinter:             project.Bool(true),
 		},
 	}
 
@@ -147,12 +170,23 @@ func TestProject(t *testing.T) {
 			t.Errorf("expected %t, got %t", *p.GoLinter, createdProject.IsGoLinter())
 		}
 
-		if createdProject.IsGoTest() != *p.GoTest {
-			t.Errorf("expected %t, got %t", *p.GoTest, createdProject.IsGoTest())
-		}
+		if *p.Name != "test4" {
 
-		if !reflect.DeepEqual(createdProject.GetGoTestArgs(), *p.GoTestArgs) {
-			t.Errorf("expected %s, got %s", *p.GoTestArgs, createdProject.GetGoTestArgs())
+			if createdProject.IsGoTest() != *p.GoTest {
+				t.Errorf("expected %t, got %t", *p.GoTest, createdProject.IsGoTest())
+			}
+
+			if createdProject.IsGoBuild() != *p.GoBuild {
+				t.Errorf("expected %t, got %t", *p.GoBuild, createdProject.IsGoBuild())
+			}
+
+			if !reflect.DeepEqual(createdProject.GetGoTestArgs(), *p.GoTestArgs) {
+				t.Errorf("expected %s, got %s", *p.GoTestArgs, createdProject.GetGoTestArgs())
+			}
+
+			if !reflect.DeepEqual(createdProject.GetGoBuildArgs(), *p.GoBuildArgs) {
+				t.Errorf("expected %s, got %s", *p.GoBuildArgs, createdProject.GetGoBuildArgs())
+			}
 		}
 
 		if !reflect.DeepEqual(createdProject.GetGitignore(), *p.Gitignore) {
@@ -165,7 +199,11 @@ func TestProject(t *testing.T) {
 
 		err = createdProject.SetupProject()
 		if err != nil {
-			t.Error(err.Error())
+			// a := strings.Contains(err.Error(), "package asd is not in GOROOT")
+			// if !a {
+			// 	t.Error(err)
+			// }
+			t.Error(err)
 		}
 
 	}
@@ -188,7 +226,7 @@ func TestProject(t *testing.T) {
 		},
 		{
 			Description:          project.String("test5"),
-			Repository:           project.String("test5"),
+			Repository:           project.String("github.com/test/test5"),
 			AuthorName:           project.String("test5"),
 			AuthorEmail:          project.String("test5"),
 			AuthorOrganization:   project.String("test5"),
