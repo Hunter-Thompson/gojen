@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/Hunter-Thompson/gojen/pkg/project"
@@ -32,6 +33,8 @@ func TestProject(t *testing.T) {
 			GoLinter:             project.Bool(true),
 			GoTest:               project.Bool(false),
 			GoTestArgs:           project.StringSlice([]string{"-v", "-cover", "./..."}),
+			GoBuild:              project.Bool(true),
+			GoBuildArgs:          project.StringSlice([]string{"asd"}),
 		},
 		{
 			Name:                 project.String("test1"),
@@ -49,6 +52,8 @@ func TestProject(t *testing.T) {
 			GoTest:               project.Bool(true),
 			GoTestArgs:           project.StringSlice([]string{"-v", "-cover"}),
 			CodeCov:              project.Bool(true),
+			GoBuild:              project.Bool(true),
+			GoBuildArgs:          project.StringSlice([]string{"asd"}),
 		},
 		{
 			Name:                 project.String("test2"),
@@ -68,6 +73,8 @@ func TestProject(t *testing.T) {
 			GoTestArgs:           project.StringSlice([]string{"", "-cover", "./..."}),
 			CodeCov:              project.Bool(true),
 			GojenVersion:         project.String("1.2.0"),
+			GoBuild:              project.Bool(false),
+			GoBuildArgs:          project.StringSlice([]string{"asd"}),
 		},
 		{
 			Name:                 project.String("test3"),
@@ -86,6 +93,8 @@ func TestProject(t *testing.T) {
 			GoTest:               project.Bool(false),
 			GoTestArgs:           project.StringSlice([]string{"-v", "-cover", "./..."}),
 			GojenVersion:         project.String("1.2.0"),
+			GoBuild:              project.Bool(true),
+			GoBuildArgs:          project.StringSlice([]string{"asd"}),
 		},
 	}
 
@@ -151,8 +160,16 @@ func TestProject(t *testing.T) {
 			t.Errorf("expected %t, got %t", *p.GoTest, createdProject.IsGoTest())
 		}
 
+		if createdProject.IsGoBuild() != *p.GoBuild {
+			t.Errorf("expected %t, got %t", *p.GoBuild, createdProject.IsGoBuild())
+		}
+
 		if !reflect.DeepEqual(createdProject.GetGoTestArgs(), *p.GoTestArgs) {
 			t.Errorf("expected %s, got %s", *p.GoTestArgs, createdProject.GetGoTestArgs())
+		}
+
+		if !reflect.DeepEqual(createdProject.GetGoBuildArgs(), *p.GoBuildArgs) {
+			t.Errorf("expected %s, got %s", *p.GoBuildArgs, createdProject.GetGoBuildArgs())
 		}
 
 		if !reflect.DeepEqual(createdProject.GetGitignore(), *p.Gitignore) {
@@ -163,9 +180,16 @@ func TestProject(t *testing.T) {
 			t.Errorf("expected %s, got %s", *p.CodeOwners, createdProject.GetCodeOwners())
 		}
 
+		if !reflect.DeepEqual(createdProject.GetGoTestArgs(), *p.GoTestArgs) {
+			t.Errorf("expected %s, got %s", *p.GoTestArgs, createdProject.GetGoTestArgs())
+		}
+
 		err = createdProject.SetupProject()
 		if err != nil {
-			t.Error(err.Error())
+			a := strings.Contains(err.Error(), "package asd is not in GOROOT")
+			if !a {
+				t.Error(err)
+			}
 		}
 
 	}
