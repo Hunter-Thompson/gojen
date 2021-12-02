@@ -95,6 +95,21 @@ func TestProject(t *testing.T) {
 			GoBuild:              project.Bool(true),
 			GoBuildArgs:          project.StringSlice([]string{""}),
 		},
+		{
+			Name:                 project.String("test4"),
+			Description:          project.String("test4"),
+			Repository:           project.String("github.com/test/test4"),
+			AuthorName:           project.String("test4"),
+			AuthorEmail:          project.String("test4"),
+			AuthorOrganization:   project.String("test4"),
+			Licensed:             project.Bool(true),
+			Release:              project.Bool(true),
+			DefaultReleaseBranch: project.String("test4"),
+			BuildWorkflow:        project.Bool(true),
+			Gitignore:            project.StringSlice([]string{"test", "test"}),
+			CodeOwners:           project.StringSlice([]string{"test", "test"}),
+			GoLinter:             project.Bool(true),
+		},
 	}
 
 	for _, p := range projects {
@@ -155,20 +170,23 @@ func TestProject(t *testing.T) {
 			t.Errorf("expected %t, got %t", *p.GoLinter, createdProject.IsGoLinter())
 		}
 
-		if createdProject.IsGoTest() != *p.GoTest {
-			t.Errorf("expected %t, got %t", *p.GoTest, createdProject.IsGoTest())
-		}
+		if *p.Name != "test4" {
 
-		if createdProject.IsGoBuild() != *p.GoBuild {
-			t.Errorf("expected %t, got %t", *p.GoBuild, createdProject.IsGoBuild())
-		}
+			if createdProject.IsGoTest() != *p.GoTest {
+				t.Errorf("expected %t, got %t", *p.GoTest, createdProject.IsGoTest())
+			}
 
-		if !reflect.DeepEqual(createdProject.GetGoTestArgs(), *p.GoTestArgs) {
-			t.Errorf("expected %s, got %s", *p.GoTestArgs, createdProject.GetGoTestArgs())
-		}
+			if createdProject.IsGoBuild() != *p.GoBuild {
+				t.Errorf("expected %t, got %t", *p.GoBuild, createdProject.IsGoBuild())
+			}
 
-		if !reflect.DeepEqual(createdProject.GetGoBuildArgs(), *p.GoBuildArgs) {
-			t.Errorf("expected %s, got %s", *p.GoBuildArgs, createdProject.GetGoBuildArgs())
+			if !reflect.DeepEqual(createdProject.GetGoTestArgs(), *p.GoTestArgs) {
+				t.Errorf("expected %s, got %s", *p.GoTestArgs, createdProject.GetGoTestArgs())
+			}
+
+			if !reflect.DeepEqual(createdProject.GetGoBuildArgs(), *p.GoBuildArgs) {
+				t.Errorf("expected %s, got %s", *p.GoBuildArgs, createdProject.GetGoBuildArgs())
+			}
 		}
 
 		if !reflect.DeepEqual(createdProject.GetGitignore(), *p.Gitignore) {
@@ -177,10 +195,6 @@ func TestProject(t *testing.T) {
 
 		if !reflect.DeepEqual(createdProject.GetCodeOwners(), *p.CodeOwners) {
 			t.Errorf("expected %s, got %s", *p.CodeOwners, createdProject.GetCodeOwners())
-		}
-
-		if !reflect.DeepEqual(createdProject.GetGoTestArgs(), *p.GoTestArgs) {
-			t.Errorf("expected %s, got %s", *p.GoTestArgs, createdProject.GetGoTestArgs())
 		}
 
 		err = createdProject.SetupProject()
