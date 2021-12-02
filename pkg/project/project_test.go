@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"os"
 	"reflect"
-	"strings"
 	"testing"
 
 	"github.com/Hunter-Thompson/gojen/pkg/project"
@@ -20,7 +19,7 @@ func TestProject(t *testing.T) {
 		{
 			Name:                 project.String("test"),
 			Description:          project.String("test"),
-			Repository:           project.String("test"),
+			Repository:           project.String("github.com/test/test"),
 			AuthorName:           project.String("test"),
 			AuthorEmail:          project.String("test"),
 			AuthorOrganization:   project.String("test"),
@@ -34,12 +33,12 @@ func TestProject(t *testing.T) {
 			GoTest:               project.Bool(false),
 			GoTestArgs:           project.StringSlice([]string{"-v", "-cover", "./..."}),
 			GoBuild:              project.Bool(true),
-			GoBuildArgs:          project.StringSlice([]string{"asd"}),
+			GoBuildArgs:          project.StringSlice([]string{""}),
 		},
 		{
 			Name:                 project.String("test1"),
 			Description:          project.String("test1"),
-			Repository:           project.String("test1"),
+			Repository:           project.String("github.com/test/test1"),
 			AuthorName:           project.String("test1"),
 			AuthorEmail:          project.String("test1"),
 			AuthorOrganization:   project.String("test1"),
@@ -53,12 +52,12 @@ func TestProject(t *testing.T) {
 			GoTestArgs:           project.StringSlice([]string{"-v", "-cover"}),
 			CodeCov:              project.Bool(true),
 			GoBuild:              project.Bool(true),
-			GoBuildArgs:          project.StringSlice([]string{"asd"}),
+			GoBuildArgs:          project.StringSlice([]string{""}),
 		},
 		{
 			Name:                 project.String("test2"),
 			Description:          project.String("test2"),
-			Repository:           project.String("test2"),
+			Repository:           project.String("github.com/test/test2"),
 			AuthorName:           project.String("test2"),
 			BuildWorkflow:        project.Bool(true),
 			AuthorEmail:          project.String("test2"),
@@ -74,13 +73,13 @@ func TestProject(t *testing.T) {
 			CodeCov:              project.Bool(true),
 			GojenVersion:         project.String("1.2.0"),
 			GoBuild:              project.Bool(false),
-			GoBuildArgs:          project.StringSlice([]string{"asd"}),
+			GoBuildArgs:          project.StringSlice([]string{""}),
 		},
 		{
 			Name:                 project.String("test3"),
 			Description:          project.String("test3"),
 			AuthorName:           project.String("test3"),
-			Repository:           project.String("test3"),
+			Repository:           project.String("github.com/test/test3"),
 			BuildWorkflow:        project.Bool(true),
 			AuthorEmail:          project.String("test3"),
 			AuthorOrganization:   project.String("test3"),
@@ -94,7 +93,7 @@ func TestProject(t *testing.T) {
 			GoTestArgs:           project.StringSlice([]string{"-v", "-cover", "./..."}),
 			GojenVersion:         project.String("1.2.0"),
 			GoBuild:              project.Bool(true),
-			GoBuildArgs:          project.StringSlice([]string{"asd"}),
+			GoBuildArgs:          project.StringSlice([]string{""}),
 		},
 	}
 
@@ -186,10 +185,11 @@ func TestProject(t *testing.T) {
 
 		err = createdProject.SetupProject()
 		if err != nil {
-			a := strings.Contains(err.Error(), "package asd is not in GOROOT")
-			if !a {
-				t.Error(err)
-			}
+			// a := strings.Contains(err.Error(), "package asd is not in GOROOT")
+			// if !a {
+			// 	t.Error(err)
+			// }
+			t.Error(err)
 		}
 
 	}
@@ -212,7 +212,7 @@ func TestProject(t *testing.T) {
 		},
 		{
 			Description:          project.String("test5"),
-			Repository:           project.String("test5"),
+			Repository:           project.String("github.com/test/test5"),
 			AuthorName:           project.String("test5"),
 			AuthorEmail:          project.String("test5"),
 			AuthorOrganization:   project.String("test5"),
