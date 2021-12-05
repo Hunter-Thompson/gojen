@@ -76,12 +76,14 @@ type Project struct {
 	Gitignore  *[]string `yaml:"gitignore" json:"gitignore"`
 	CodeOwners *[]string `yaml:"codeOwners" json:"codeOwners"`
 
-	GoLinter    *bool               `yaml:"goLinter" json:"goLinter"`
-	GoTest      *bool               `yaml:"goTest" json:"goTest"`
-	GoTestArgs  *[]string           `yaml:"goTestArgs" json:"goTestArgs"`
-	GoBuild     *bool               `yaml:"goBuild" json:"goBuild"`
-	GoBuildArgs *[]string           `yaml:"goBuildArgs" json:"goBuildArgs"`
-	WorkflowEnv *map[string]*string `yaml:"workflowEnv" json:"workflowEnv"`
+	GoLinter     *bool               `yaml:"goLinter" json:"goLinter"`
+	GoTest       *bool               `yaml:"goTest" json:"goTest"`
+	GoTestArgs   *[]string           `yaml:"goTestArgs" json:"goTestArgs"`
+	GoBuild      *bool               `yaml:"goBuild" json:"goBuild"`
+	GoBuildArgs  *[]string           `yaml:"goBuildArgs" json:"goBuildArgs"`
+	WorkflowEnv  *map[string]*string `yaml:"workflowEnv" json:"workflowEnv"`
+	PrependSteps *[]*github.JobStep  `yaml:"prependSteps" json:"prependSteps"`
+	AppendSteps  *[]*github.JobStep  `yaml:"apendSteps" json:"apendSteps"`
 }
 
 func InitProject() (IProject, error) {
@@ -431,6 +433,10 @@ func (proj *Project) getCommonSteps() []*github.JobStep {
 		},
 	})
 
+	if proj.PrependSteps != nil {
+		wf = append(wf, *proj.PrependSteps...)
+	}
+
 	if proj.IsIsGojen() {
 		wf = append(wf, &github.JobStep{
 			Name: String("Build and run gojen"),
@@ -465,6 +471,10 @@ func (proj *Project) getCommonSteps() []*github.JobStep {
 		Id:   String("git_diff"),
 		Run:  String("git diff --exit-code || echo \"::set-output name=has_changes::true\""),
 	})
+
+	if proj.AppendSteps != nil {
+		wf = append(wf, *proj.AppendSteps...)
+	}
 
 	return wf
 }

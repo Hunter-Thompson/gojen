@@ -1,0 +1,57 @@
+"on":
+  pull_request: {}
+name: build
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup go
+      uses: actions/setup-go@v2
+      with:
+        go-version: "1.16"
+    - name: Install gojen
+      run: go install github.com/Hunter-Thompson/gojen@1.2.0
+    - env:
+        asd: testenv2
+      name: Run gojen
+      run: gojen --ci
+    - name: Upload codecov coverage
+      uses: codecov/codecov-action@v2
+      with:
+        files: ./coverage.txt
+    - id: git_diff
+      name: Check for changes
+      run: git diff --exit-code || echo "::set-output name=has_changes::true"
+    - if: steps.git_diff.outputs.has_changes
+      name: Commit and push changes (if changed)
+      run: |-
+        git add . && git commit -m 'chore: self mutation && git push origin
+        HEAD:${{ github.event.pull_request.head.ref }}'
+    - env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      if: steps.git_diff.outputs.has_changes
+      name: Update status check (if changed)
+      run: |-
+        gh api -X POST /repos/${{ github.event.pull_request.head.repo.full_name
+        }}/check-runs -F name="build" -F head_sha="$(git rev-parse HEAD)" -F status="completed" -F conclusion="success
+    - env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      if: steps.git_diff.outputs.has_changes
+      name: Cancel workflow (if changed)
+      run: |-
+        gh api -X POST /repos/${{ github.event.pull_request.head.repo.full_name
+        }}/actions/runs/${{ github.run_id }}/cancel
+    name: build
+  golangci:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Lint using golangci-lint
+      uses: golangci/golangci-lint-action@v2
+      with:
+        args: --timeout=5m
+    name: lint
+

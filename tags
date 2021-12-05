@@ -24,6 +24,7 @@ AddTrigger	pkg/github/action.go	/^	AddTrigger(trigger Triggers)$/;"	n	interface:
 AddTrigger	pkg/github/action.go	/^func (a *Action) AddTrigger(trigger Triggers) {$/;"	f	unknown:github.Action
 AppendStep	pkg/github/action.go	/^	AppendStep(jobName string, steps *JobStep) error$/;"	n	interface:github.IAction	typeref:typename:error
 AppendStep	pkg/github/action.go	/^func (a *Action) AppendStep(jobName string, steps *JobStep) error {$/;"	f	unknown:github.Action	typeref:typename:error
+AppendSteps	pkg/project/project.go	/^	AppendSteps  *[]*github.JobStep  `yaml:"apendSteps" json:"apendSteps"`$/;"	m	struct:project.Project	typeref:typename:*[]*github.JobStep
 AuthorEmail	pkg/project/project.go	/^	AuthorEmail        *string `yaml:"authorEmail" json:"authorEmail"`$/;"	m	struct:project.Project	typeref:typename:*string
 AuthorName	pkg/project/project.go	/^	AuthorName         *string `yaml:"authorName" json:"authorName"`$/;"	m	struct:project.Project	typeref:typename:*string
 AuthorOrganization	pkg/project/project.go	/^	AuthorOrganization *string `yaml:"authorOrganization" json:"authorOrganization"`$/;"	m	struct:project.Project	typeref:typename:*string
@@ -114,11 +115,11 @@ GetWorkflowEnv	pkg/project/project.go	/^func (proj *Project) GetWorkflowEnv() *m
 Getting started	README.md	/^## Getting started$/;"	s	chapter:gojen
 GithubToken	pkg/project/project.go	/^	GithubToken          *string   `yaml:"githubToken" json:"githubToken"`$/;"	m	struct:project.Project	typeref:typename:*string
 Gitignore	pkg/project/project.go	/^	Gitignore  *[]string `yaml:"gitignore" json:"gitignore"`$/;"	m	struct:project.Project	typeref:typename:*[]string
-GoBuild	pkg/project/project.go	/^	GoBuild     *bool               `yaml:"goBuild" json:"goBuild"`$/;"	m	struct:project.Project	typeref:typename:*bool
-GoBuildArgs	pkg/project/project.go	/^	GoBuildArgs *[]string           `yaml:"goBuildArgs" json:"goBuildArgs"`$/;"	m	struct:project.Project	typeref:typename:*[]string
-GoLinter	pkg/project/project.go	/^	GoLinter    *bool               `yaml:"goLinter" json:"goLinter"`$/;"	m	struct:project.Project	typeref:typename:*bool
-GoTest	pkg/project/project.go	/^	GoTest      *bool               `yaml:"goTest" json:"goTest"`$/;"	m	struct:project.Project	typeref:typename:*bool
-GoTestArgs	pkg/project/project.go	/^	GoTestArgs  *[]string           `yaml:"goTestArgs" json:"goTestArgs"`$/;"	m	struct:project.Project	typeref:typename:*[]string
+GoBuild	pkg/project/project.go	/^	GoBuild      *bool               `yaml:"goBuild" json:"goBuild"`$/;"	m	struct:project.Project	typeref:typename:*bool
+GoBuildArgs	pkg/project/project.go	/^	GoBuildArgs  *[]string           `yaml:"goBuildArgs" json:"goBuildArgs"`$/;"	m	struct:project.Project	typeref:typename:*[]string
+GoLinter	pkg/project/project.go	/^	GoLinter     *bool               `yaml:"goLinter" json:"goLinter"`$/;"	m	struct:project.Project	typeref:typename:*bool
+GoTest	pkg/project/project.go	/^	GoTest       *bool               `yaml:"goTest" json:"goTest"`$/;"	m	struct:project.Project	typeref:typename:*bool
+GoTestArgs	pkg/project/project.go	/^	GoTestArgs   *[]string           `yaml:"goTestArgs" json:"goTestArgs"`$/;"	m	struct:project.Project	typeref:typename:*[]string
 GoVersion	pkg/project/project.go	/^	GoVersion   *string `yaml:"goVersion" json:"goVersion"`$/;"	m	struct:project.Project	typeref:typename:*string
 GojenVersion	pkg/project/project.go	/^	GojenVersion *string `yaml:"gojenVersion" json:"gojenVersion"`$/;"	m	struct:project.Project	typeref:typename:*string
 Gollum	pkg/github/action.go	/^	Gollum *GollumOptions `yaml:"gollum,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*GollumOptions
@@ -199,6 +200,7 @@ Permissions	pkg/github/action.go	/^	Permissions *JobPermissions `yaml:"permissio
 Ports	pkg/github/action.go	/^	Ports *[]*float64 `yaml:"ports,omitempty"`$/;"	m	struct:github.ContainerOptions	typeref:typename:*[]*float64
 PrependStep	pkg/github/action.go	/^	PrependStep(jobName string, steps *JobStep) error$/;"	n	interface:github.IAction	typeref:typename:error
 PrependStep	pkg/github/action.go	/^func (a *Action) PrependStep(jobName string, steps *JobStep) error {$/;"	f	unknown:github.Action	typeref:typename:error
+PrependSteps	pkg/project/project.go	/^	PrependSteps *[]*github.JobStep  `yaml:"prependSteps" json:"prependSteps"`$/;"	m	struct:project.Project	typeref:typename:*[]*github.JobStep
 Project	pkg/github/action.go	/^	Project *ProjectOptions `yaml:"project,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*ProjectOptions
 Project	pkg/project/project.go	/^type Project struct {$/;"	s	package:project
 ProjectCard	pkg/github/action.go	/^	ProjectCard *ProjectCardOptions `yaml:"project_card,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*ProjectCardOptions
@@ -293,7 +295,7 @@ WatchOptions	pkg/github/action.go	/^type WatchOptions struct {$/;"	s	package:git
 With	pkg/github/action.go	/^	With *map[string]interface{} `yaml:"with,omitempty"`$/;"	m	struct:github.JobStep	typeref:typename:*map[string]interface{}
 WorkflowDispatch	pkg/github/action.go	/^	WorkflowDispatch *WorkflowDispatchOptions `yaml:"workflow-dispatch,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*WorkflowDispatchOptions
 WorkflowDispatchOptions	pkg/github/action.go	/^type WorkflowDispatchOptions struct {$/;"	s	package:github
-WorkflowEnv	pkg/project/project.go	/^	WorkflowEnv *map[string]*string `yaml:"workflowEnv" json:"workflowEnv"`$/;"	m	struct:project.Project	typeref:typename:*map[string]*string
+WorkflowEnv	pkg/project/project.go	/^	WorkflowEnv  *map[string]*string `yaml:"workflowEnv" json:"workflowEnv"`$/;"	m	struct:project.Project	typeref:typename:*map[string]*string
 WorkflowRun	pkg/github/action.go	/^	WorkflowRun *WorkflowRunOptions `yaml:"workflow-run,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*WorkflowRunOptions
 WorkflowRunOptions	pkg/github/action.go	/^type WorkflowRunOptions struct {$/;"	s	package:github
 WorkingDirectory	pkg/github/action.go	/^	WorkingDirectory *string `yaml:"working-directory,omitempty"`$/;"	m	struct:github.RunSettings	typeref:typename:*string
