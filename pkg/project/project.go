@@ -425,10 +425,6 @@ func (proj *Project) getCommonSteps() []*github.JobStep {
 
 	wf := []*github.JobStep{}
 
-	if proj.PrependSteps != nil {
-		wf = append(wf, *proj.PrependSteps...)
-	}
-
 	wf = append(wf, &github.JobStep{
 		Name: String("Setup go"),
 		Uses: String("actions/setup-go@v2"),
@@ -436,6 +432,10 @@ func (proj *Project) getCommonSteps() []*github.JobStep {
 			"go-version": proj.GetGoVersion(),
 		},
 	})
+
+	if proj.PrependSteps != nil {
+		wf = append(wf, *proj.PrependSteps...)
+	}
 
 	if proj.IsIsGojen() {
 		wf = append(wf, &github.JobStep{
