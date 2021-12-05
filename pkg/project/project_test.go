@@ -4,10 +4,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"reflect"
+	"strconv"
 	"testing"
 
+	"github.com/Hunter-Thompson/gojen/pkg/github"
 	"github.com/Hunter-Thompson/gojen/pkg/project"
+	"github.com/bradleyjkemp/cupaloy/v2"
 )
 
 func TestProject(t *testing.T) {
@@ -37,6 +41,26 @@ func TestProject(t *testing.T) {
 			WorkflowEnv: &map[string]*string{
 				"asd": project.String("testenv"),
 			},
+			AppendSteps: &[]*github.JobStep{
+				{
+					Name: project.String("appendtest1"),
+					Run:  project.String("test1"),
+				},
+				{
+					Name: project.String("appendtest2"),
+					Run:  project.String("test2"),
+				},
+			},
+			PrependSteps: &[]*github.JobStep{
+				{
+					Name: project.String("prependteststep1"),
+					Run:  project.String("test1"),
+				},
+				{
+					Name: project.String("prependteststep2"),
+					Run:  project.String("test2"),
+				},
+			},
 		},
 		{
 			Name:                 project.String("test1"),
@@ -58,6 +82,26 @@ func TestProject(t *testing.T) {
 			GoBuildArgs:          project.StringSlice([]string{""}),
 			WorkflowEnv: &map[string]*string{
 				"asd": project.String("testenv1"),
+			},
+			AppendSteps: &[]*github.JobStep{
+				{
+					Name: project.String("appendtest2"),
+					Run:  project.String("test2"),
+				},
+				{
+					Name: project.String("appendtest3"),
+					Run:  project.String("test3"),
+				},
+			},
+			PrependSteps: &[]*github.JobStep{
+				{
+					Name: project.String("prependteststep4"),
+					Run:  project.String("test1"),
+				},
+				{
+					Name: project.String("prependteststep4"),
+					Run:  project.String("test2"),
+				},
 			},
 		},
 		{
@@ -124,7 +168,7 @@ func TestProject(t *testing.T) {
 		},
 	}
 
-	for _, p := range projects {
+	for k, p := range projects {
 
 		project.CI = true
 
@@ -133,7 +177,10 @@ func TestProject(t *testing.T) {
 			t.Error(err.Error())
 		}
 
-		defer os.RemoveAll(dir)
+		pwd, err := os.Getwd()
+		if err != nil {
+			t.Error(err)
+		}
 
 		err = os.Chdir(dir)
 		if err != nil {
@@ -220,6 +267,64 @@ func TestProject(t *testing.T) {
 			t.Error(err)
 		}
 
+		err = os.Chdir(pwd)
+		if err != nil {
+			t.Error(err.Error())
+		}
+
+		codeOwnersFile := filepath.Join(dir, ".github", "CODEOWNERS")
+		if _, err := os.Stat(codeOwnersFile); os.IsNotExist(err) {
+			t.Errorf("expected %s to exist", codeOwnersFile)
+		}
+		codeOwnersContents, err := ioutil.ReadFile(codeOwnersFile)
+		if err != nil {
+			t.Error(err)
+		}
+		err = cupaloy.SnapshotMulti(strconv.Itoa(k)+"codeowners", (codeOwnersContents))
+		if err != nil {
+			t.Error(err)
+		}
+
+		gitIgnoreFile := filepath.Join(dir, ".gitignore")
+		if _, err := os.Stat(gitIgnoreFile); os.IsNotExist(err) {
+			t.Errorf("expected %s to exist", gitIgnoreFile)
+		}
+		gitIgnoreContents, err := ioutil.ReadFile(gitIgnoreFile)
+		if err != nil {
+			t.Error(err)
+		}
+		err = cupaloy.SnapshotMulti(strconv.Itoa(k)+"gitignore", (gitIgnoreContents))
+		if err != nil {
+			t.Error(err)
+		}
+
+		if createdProject.GetName() != "test1" {
+			buildWorkflowFile := filepath.Join(dir, ".github", "workflows", "build.yml")
+			if _, err := os.Stat(buildWorkflowFile); os.IsNotExist(err) {
+				t.Errorf("expected %s to exist", buildWorkflowFile)
+			}
+			buildWorkflowContents, err := ioutil.ReadFile(buildWorkflowFile)
+			if err != nil {
+				t.Error(err)
+			}
+			err = cupaloy.SnapshotMulti(strconv.Itoa(k)+"buildworkflow", (buildWorkflowContents))
+			if err != nil {
+				t.Error(err)
+			}
+
+			releaseWorfklowFile := filepath.Join(dir, ".github", "workflows", "release.yml")
+			if _, err := os.Stat(releaseWorfklowFile); os.IsNotExist(err) {
+				t.Errorf("expected %s to exist", releaseWorfklowFile)
+			}
+			releaseWorfklowContents, err := ioutil.ReadFile(releaseWorfklowFile)
+			if err != nil {
+				t.Error(err)
+			}
+			err = cupaloy.SnapshotMulti(strconv.Itoa(k)+"releaseworkflow", (releaseWorfklowContents))
+			if err != nil {
+				t.Error(err)
+			}
+		}
 	}
 
 	failedProjects := []project.Project{

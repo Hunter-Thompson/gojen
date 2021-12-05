@@ -1,0 +1,55 @@
+"on":
+  push:
+    branches:
+    - test3
+name: release
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup go
+      uses: actions/setup-go@v2
+      with:
+        go-version: "1.16"
+    - name: Install gojen
+      run: go install github.com/Hunter-Thompson/gojen@1.2.0
+    - env:
+        asd: testenv3
+      name: Run gojen
+      run: gojen --ci
+    - id: git_diff
+      name: Check for changes
+      run: git diff --exit-code || echo "::set-output name=has_changes::true"
+    - if: steps.git_diff.outputs.has_changes
+      name: Exit 1 if changes found
+      run: exit 1
+    name: build
+  golangci:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Lint using golangci-lint
+      uses: golangci/golangci-lint-action@v2
+      with:
+        args: --timeout=5m
+    name: lint
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - id: create-release
+      name: Create Release
+      uses: go-semantic-release/action@v1
+      with:
+        changelog-generator-opt: emojis=false
+        force-bump-patch-version: true
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+    name: create release
+    needs:
+    - golangci
+    - build
+
