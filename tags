@@ -1,0 +1,344 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/hunter/hunter-os/gojen/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	/3024e8b9/
+0	gojen.json	/^    "* Hunter-Thompson"$/;"	s	array:codeOwners
+0	gojen.json	/^    "-cover",$/;"	s	array:goTestArgs
+0	gojen.json	/^    "test"$/;"	s	array:gitignore
+1	gojen.json	/^    ".\/..."$/;"	s	array:goTestArgs
+Action	pkg/github/action.go	/^type Action struct {$/;"	s	package:github
+Actions	pkg/github/action.go	/^	Actions JobPermission `yaml:"actions,omitempty"`$/;"	m	struct:github.JobPermissions	typeref:typename:JobPermission
+AddCodeCov	pkg/project/project.go	/^func (proj *Project) AddCodeCov() error {$/;"	f	struct:project.Project	typeref:typename:error
+AddJobs	pkg/github/action.go	/^	AddJobs(job map[string]*Job)$/;"	n	interface:github.IAction
+AddJobs	pkg/github/action.go	/^func (a *Action) AddJobs(job map[string]*Job) {$/;"	f	unknown:github.Action
+AddStep	pkg/github/action.go	/^	AddStep(jobName string, steps *JobStep) error$/;"	n	interface:github.IAction	typeref:typename:error
+AddStep	pkg/github/action.go	/^func (a *Action) AddStep(jobName string, steps *JobStep) error {$/;"	f	unknown:github.Action	typeref:typename:error
+AddTrigger	pkg/github/action.go	/^	AddTrigger(trigger Triggers)$/;"	n	interface:github.IAction
+AddTrigger	pkg/github/action.go	/^func (a *Action) AddTrigger(trigger Triggers) {$/;"	f	unknown:github.Action
+AppendStep	pkg/github/action.go	/^	AppendStep(jobName string, steps *JobStep) error$/;"	n	interface:github.IAction	typeref:typename:error
+AppendStep	pkg/github/action.go	/^func (a *Action) AppendStep(jobName string, steps *JobStep) error {$/;"	f	unknown:github.Action	typeref:typename:error
+AuthorEmail	pkg/project/project.go	/^	AuthorEmail        *string `yaml:"authorEmail" json:"authorEmail"`$/;"	m	struct:project.Project	typeref:typename:*string
+AuthorName	pkg/project/project.go	/^	AuthorName         *string `yaml:"authorName" json:"authorName"`$/;"	m	struct:project.Project	typeref:typename:*string
+AuthorOrganization	pkg/project/project.go	/^	AuthorOrganization *string `yaml:"authorOrganization" json:"authorOrganization"`$/;"	m	struct:project.Project	typeref:typename:*string
+Bool	pkg/project/project.go	/^func Bool(b bool) *bool {$/;"	f	package:project	typeref:typename:*bool
+Branches	pkg/github/action.go	/^	Branches *[]*string `yaml:"branches,omitempty"`$/;"	m	struct:github.PullRequestTargetOptions	typeref:typename:*[]*string
+Branches	pkg/github/action.go	/^	Branches *[]*string `yaml:"branches,omitempty"`$/;"	m	struct:github.PushOptions	typeref:typename:*[]*string
+BuildWorkflow	pkg/project/project.go	/^	BuildWorkflow        *bool     `yaml:"buildWorkflow" json:"buildWorkflow"`$/;"	m	struct:project.Project	typeref:typename:*bool
+CI	pkg/project/project.go	/^var CI bool$/;"	v	package:project	typeref:typename:bool
+CheckRun	pkg/github/action.go	/^	CheckRun *CheckRunOptions `yaml:"check_run,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*CheckRunOptions
+CheckRunOptions	pkg/github/action.go	/^type CheckRunOptions struct {$/;"	s	package:github
+CheckSuite	pkg/github/action.go	/^	CheckSuite *CheckSuiteOptions `yaml:"check-suite,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*CheckSuiteOptions
+CheckSuiteOptions	pkg/github/action.go	/^type CheckSuiteOptions struct {$/;"	s	package:github
+Checks	pkg/github/action.go	/^	Checks JobPermission `yaml:"checks,omitempty"`$/;"	m	struct:github.JobPermissions	typeref:typename:JobPermission
+CodeCov	pkg/project/project.go	/^	CodeCov              *bool     `yaml:"codeCov" json:"codeCov"`$/;"	m	struct:project.Project	typeref:typename:*bool
+CodeOwners	pkg/project/project.go	/^	CodeOwners *[]string `yaml:"codeOwners" json:"codeOwners"`$/;"	m	struct:project.Project	typeref:typename:*[]string
+Concurrency	pkg/github/action.go	/^	Concurrency interface{} `yaml:"concurrency,omitempty"`$/;"	m	struct:github.Job	typeref:typename:interface{}
+Container	pkg/github/action.go	/^	Container *ContainerOptions `yaml:"container,omitempty"`$/;"	m	struct:github.Job	typeref:typename:*ContainerOptions
+ContainerCredentials	pkg/github/action.go	/^type ContainerCredentials struct {$/;"	s	package:github
+ContainerOptions	pkg/github/action.go	/^type ContainerOptions struct {$/;"	s	package:github
+Contents	pkg/github/action.go	/^	Contents JobPermission `yaml:"contents,omitempty"`$/;"	m	struct:github.JobPermissions	typeref:typename:JobPermission
+ContinueOnError	pkg/github/action.go	/^	ContinueOnError *bool `yaml:"continue-on-error,omitempty"`$/;"	m	struct:github.JobStep	typeref:typename:*bool
+ContinueOnError	pkg/github/action.go	/^	ContinueOnError *bool `yaml:"continueOnError,omitempty"`$/;"	m	struct:github.Job	typeref:typename:*bool
+ConvertToYAML	pkg/github/action.go	/^	ConvertToYAML() ([]byte, error)$/;"	n	interface:github.IAction	typeref:typename:([]byte, error)
+ConvertToYAML	pkg/github/action.go	/^func (a *Action) ConvertToYAML() ([]byte, error) {$/;"	f	unknown:github.Action	typeref:typename:([]byte, error)
+Create	pkg/github/action.go	/^	Create *CreateOptions `yaml:"create,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*CreateOptions
+CreateBuildWorkflow	pkg/project/project.go	/^func (proj *Project) CreateBuildWorkflow() error {$/;"	f	struct:project.Project	typeref:typename:error
+CreateOptions	pkg/github/action.go	/^type CreateOptions struct {$/;"	s	package:github
+CreateReadme	pkg/project/project.go	/^	CreateReadme() error$/;"	n	interface:project.IProject	typeref:typename:error
+CreateReadme	pkg/project/project.go	/^func (proj *Project) CreateReadme() error {$/;"	f	struct:project.Project	typeref:typename:error
+CreateReleaseWorkflow	pkg/project/project.go	/^func (proj *Project) CreateReleaseWorkflow() error {$/;"	f	struct:project.Project	typeref:typename:error
+CreateWorkflow	pkg/github/action.go	/^func CreateWorkflow(name string) IAction {$/;"	f	package:github	typeref:typename:IAction
+Credentials	pkg/github/action.go	/^	Credentials *ContainerCredentials `yaml:"credentials,omitempty"`$/;"	m	struct:github.ContainerOptions	typeref:typename:*ContainerCredentials
+Cron	pkg/github/action.go	/^	Cron *string `yaml:"cron,omitempty"`$/;"	m	struct:github.CronScheduleOptions	typeref:typename:*string
+CronScheduleOptions	pkg/github/action.go	/^type CronScheduleOptions struct {$/;"	s	package:github
+DefaultReleaseBranch	pkg/project/project.go	/^	DefaultReleaseBranch *string   `yaml:"defaultReleaseBranch" json:"defaultReleaseBranch"`$/;"	m	struct:project.Project	typeref:typename:*string
+Defaults	pkg/github/action.go	/^	Defaults *JobDefaults `yaml:"defaults,omitempty"`$/;"	m	struct:github.Job	typeref:typename:*JobDefaults
+Delete	pkg/github/action.go	/^	Delete *DeleteOptions `yaml:"delete,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*DeleteOptions
+DeleteOptions	pkg/github/action.go	/^type DeleteOptions struct {$/;"	s	package:github
+Deployment	pkg/github/action.go	/^	Deployment *DeploymentOptions `yaml:"deployment,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*DeploymentOptions
+DeploymentOptions	pkg/github/action.go	/^type DeploymentOptions struct {$/;"	s	package:github
+DeploymentStatus	pkg/github/action.go	/^	DeploymentStatus *DeploymentStatusOptions `yaml:"deployment_status,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*DeploymentStatusOptions
+DeploymentStatusOptions	pkg/github/action.go	/^type DeploymentStatusOptions struct {$/;"	s	package:github
+Deployments	pkg/github/action.go	/^	Deployments JobPermission `yaml:"deployments,omitempty"`$/;"	m	struct:github.JobPermissions	typeref:typename:JobPermission
+Description	pkg/project/project.go	/^	Description *string `yaml:"description" json:"description"`$/;"	m	struct:project.Project	typeref:typename:*string
+Domain	pkg/github/action.go	/^	Domain *map[string]*[]*string `yaml:"domain,omitempty"`$/;"	m	struct:github.JobMatrix	typeref:typename:*map[string]*[]*string
+Env	pkg/github/action.go	/^	Env *map[string]*string `yaml:"env,omitempty"`$/;"	m	struct:github.ContainerOptions	typeref:typename:*map[string]*string
+Env	pkg/github/action.go	/^	Env *map[string]*string `yaml:"env,omitempty"`$/;"	m	struct:github.Job	typeref:typename:*map[string]*string
+Env	pkg/github/action.go	/^	Env *map[string]*string `yaml:"env,omitempty"`$/;"	m	struct:github.JobStep	typeref:typename:*map[string]*string
+Environment	pkg/github/action.go	/^	Environment interface{} `yaml:"environment,omitempty"`$/;"	m	struct:github.Job	typeref:typename:interface{}
+Example project	README.md	/^## Example project$/;"	s	chapter:gojen
+Exclude	pkg/github/action.go	/^	Exclude *[]*map[string]*string `yaml:"exclude,omitempty"`$/;"	m	struct:github.JobMatrix	typeref:typename:*[]*map[string]*string
+Execute	cmd/root.go	/^func Execute() {$/;"	f	package:cmd
+FailFast	pkg/github/action.go	/^	FailFast *bool `yaml:"fail-fast,omitempty"`$/;"	m	struct:github.JobStrategy	typeref:typename:*bool
+Features	README.md	/^## Features$/;"	s	chapter:gojen
+Fork	pkg/github/action.go	/^	Fork *ForkOptions `yaml:"fork,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*ForkOptions
+ForkOptions	pkg/github/action.go	/^type ForkOptions struct {$/;"	s	package:github
+GetAuthorEmail	pkg/project/project.go	/^	GetAuthorEmail() string$/;"	n	interface:project.IProject	typeref:typename:string
+GetAuthorEmail	pkg/project/project.go	/^func (proj *Project) GetAuthorEmail() string {$/;"	f	struct:project.Project	typeref:typename:string
+GetAuthorName	pkg/project/project.go	/^	GetAuthorName() string$/;"	n	interface:project.IProject	typeref:typename:string
+GetAuthorName	pkg/project/project.go	/^func (proj *Project) GetAuthorName() string {$/;"	f	struct:project.Project	typeref:typename:string
+GetAuthorOrganization	pkg/project/project.go	/^	GetAuthorOrganization() string$/;"	n	interface:project.IProject	typeref:typename:string
+GetAuthorOrganization	pkg/project/project.go	/^func (proj *Project) GetAuthorOrganization() string {$/;"	f	struct:project.Project	typeref:typename:string
+GetCodeOwners	pkg/project/project.go	/^	GetCodeOwners() []string$/;"	n	interface:project.IProject	typeref:typename:[]string
+GetCodeOwners	pkg/project/project.go	/^func (proj *Project) GetCodeOwners() []string {$/;"	f	struct:project.Project	typeref:typename:[]string
+GetConfig	pkg/project/project.go	/^func GetConfig() (*Project, error) {$/;"	f	package:project	typeref:typename:(*Project, error)
+GetDefaultReleaseBranch	pkg/project/project.go	/^	GetDefaultReleaseBranch() string$/;"	n	interface:project.IProject	typeref:typename:string
+GetDefaultReleaseBranch	pkg/project/project.go	/^func (proj *Project) GetDefaultReleaseBranch() string {$/;"	f	struct:project.Project	typeref:typename:string
+GetDescription	pkg/project/project.go	/^	GetDescription() string$/;"	n	interface:project.IProject	typeref:typename:string
+GetDescription	pkg/project/project.go	/^func (proj *Project) GetDescription() string {$/;"	f	struct:project.Project	typeref:typename:string
+GetGitHubToken	pkg/project/project.go	/^	GetGitHubToken() string$/;"	n	interface:project.IProject	typeref:typename:string
+GetGitHubToken	pkg/project/project.go	/^func (proj *Project) GetGitHubToken() string {$/;"	f	struct:project.Project	typeref:typename:string
+GetGitignore	pkg/project/project.go	/^	GetGitignore() []string$/;"	n	interface:project.IProject	typeref:typename:[]string
+GetGitignore	pkg/project/project.go	/^func (proj *Project) GetGitignore() []string {$/;"	f	struct:project.Project	typeref:typename:[]string
+GetGoBuildArgs	pkg/project/project.go	/^	GetGoBuildArgs() []string$/;"	n	interface:project.IProject	typeref:typename:[]string
+GetGoBuildArgs	pkg/project/project.go	/^func (proj *Project) GetGoBuildArgs() []string {$/;"	f	struct:project.Project	typeref:typename:[]string
+GetGoTestArgs	pkg/project/project.go	/^	GetGoTestArgs() []string$/;"	n	interface:project.IProject	typeref:typename:[]string
+GetGoTestArgs	pkg/project/project.go	/^func (proj *Project) GetGoTestArgs() []string {$/;"	f	struct:project.Project	typeref:typename:[]string
+GetGoVersion	pkg/project/project.go	/^func (proj *Project) GetGoVersion() string {$/;"	f	struct:project.Project	typeref:typename:string
+GetGojenVersion	pkg/project/project.go	/^	GetGojenVersion() string$/;"	n	interface:project.IProject	typeref:typename:string
+GetGojenVersion	pkg/project/project.go	/^func (proj *Project) GetGojenVersion() string {$/;"	f	struct:project.Project	typeref:typename:string
+GetName	pkg/project/project.go	/^	GetName() string$/;"	n	interface:project.IProject	typeref:typename:string
+GetName	pkg/project/project.go	/^func (proj *Project) GetName() string {$/;"	f	struct:project.Project	typeref:typename:string
+GetRepository	pkg/project/project.go	/^	GetRepository() string$/;"	n	interface:project.IProject	typeref:typename:string
+GetRepository	pkg/project/project.go	/^func (proj *Project) GetRepository() string {$/;"	f	struct:project.Project	typeref:typename:string
+GetTestEnvVars	pkg/project/project.go	/^func (proj *Project) GetTestEnvVars() []string {$/;"	f	struct:project.Project	typeref:typename:[]string
+GetWorkflowEnv	pkg/project/project.go	/^	GetWorkflowEnv() *map[string]*string$/;"	n	interface:project.IProject	typeref:typename:*map[string]*string
+GetWorkflowEnv	pkg/project/project.go	/^func (proj *Project) GetWorkflowEnv() *map[string]*string {$/;"	f	struct:project.Project	typeref:typename:*map[string]*string
+Getting started	README.md	/^## Getting started$/;"	s	chapter:gojen
+GithubToken	pkg/project/project.go	/^	GithubToken          *string   `yaml:"githubToken" json:"githubToken"`$/;"	m	struct:project.Project	typeref:typename:*string
+Gitignore	pkg/project/project.go	/^	Gitignore  *[]string `yaml:"gitignore" json:"gitignore"`$/;"	m	struct:project.Project	typeref:typename:*[]string
+GoBuild	pkg/project/project.go	/^	GoBuild     *bool               `yaml:"goBuild" json:"goBuild"`$/;"	m	struct:project.Project	typeref:typename:*bool
+GoBuildArgs	pkg/project/project.go	/^	GoBuildArgs *[]string           `yaml:"goBuildArgs" json:"goBuildArgs"`$/;"	m	struct:project.Project	typeref:typename:*[]string
+GoLinter	pkg/project/project.go	/^	GoLinter    *bool               `yaml:"goLinter" json:"goLinter"`$/;"	m	struct:project.Project	typeref:typename:*bool
+GoTest	pkg/project/project.go	/^	GoTest      *bool               `yaml:"goTest" json:"goTest"`$/;"	m	struct:project.Project	typeref:typename:*bool
+GoTestArgs	pkg/project/project.go	/^	GoTestArgs  *[]string           `yaml:"goTestArgs" json:"goTestArgs"`$/;"	m	struct:project.Project	typeref:typename:*[]string
+GoVersion	pkg/project/project.go	/^	GoVersion   *string `yaml:"goVersion" json:"goVersion"`$/;"	m	struct:project.Project	typeref:typename:*string
+GojenVersion	pkg/project/project.go	/^	GojenVersion *string `yaml:"gojenVersion" json:"gojenVersion"`$/;"	m	struct:project.Project	typeref:typename:*string
+Gollum	pkg/github/action.go	/^	Gollum *GollumOptions `yaml:"gollum,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*GollumOptions
+GollumOptions	pkg/github/action.go	/^type GollumOptions struct {$/;"	s	package:github
+IAction	pkg/github/action.go	/^type IAction interface {$/;"	i	package:github
+IProject	pkg/project/project.go	/^type IProject interface {$/;"	i	package:project
+Id	pkg/github/action.go	/^	Id *string `yaml:"id,omitempty"`$/;"	m	struct:github.JobStep	typeref:typename:*string
+If	pkg/github/action.go	/^	If *string `yaml:"if,omitempty"`$/;"	m	struct:github.Job	typeref:typename:*string
+If	pkg/github/action.go	/^	If *string `yaml:"if,omitempty"`$/;"	m	struct:github.JobStep	typeref:typename:*string
+Image	pkg/github/action.go	/^	Image *string `yaml:"image,omitempty"`$/;"	m	struct:github.ContainerOptions	typeref:typename:*string
+Include	pkg/github/action.go	/^	Include *[]*map[string]*string `yaml:"include,omitempty"`$/;"	m	struct:github.JobMatrix	typeref:typename:*[]*map[string]*string
+InitProject	pkg/project/project.go	/^func InitProject() (IProject, error) {$/;"	f	package:project	typeref:typename:(IProject, error)
+Int	pkg/project/project.go	/^func Int(i int) *int {$/;"	f	package:project	typeref:typename:*int
+IsBuildWorkflow	pkg/project/project.go	/^	IsBuildWorkflow() bool$/;"	n	interface:project.IProject	typeref:typename:bool
+IsBuildWorkflow	pkg/project/project.go	/^func (proj *Project) IsBuildWorkflow() bool {$/;"	f	struct:project.Project	typeref:typename:bool
+IsCodeCov	pkg/project/project.go	/^	IsCodeCov() bool$/;"	n	interface:project.IProject	typeref:typename:bool
+IsCodeCov	pkg/project/project.go	/^func (proj *Project) IsCodeCov() bool {$/;"	f	struct:project.Project	typeref:typename:bool
+IsCreateReadme	pkg/project/project.go	/^	IsCreateReadme() bool$/;"	n	interface:project.IProject	typeref:typename:bool
+IsCreateReadme	pkg/project/project.go	/^func (proj *Project) IsCreateReadme() bool {$/;"	f	struct:project.Project	typeref:typename:bool
+IsGoBuild	pkg/project/project.go	/^	IsGoBuild() bool$/;"	n	interface:project.IProject	typeref:typename:bool
+IsGoBuild	pkg/project/project.go	/^func (proj *Project) IsGoBuild() bool {$/;"	f	struct:project.Project	typeref:typename:bool
+IsGoLinter	pkg/project/project.go	/^	IsGoLinter() bool$/;"	n	interface:project.IProject	typeref:typename:bool
+IsGoLinter	pkg/project/project.go	/^func (proj *Project) IsGoLinter() bool {$/;"	f	struct:project.Project	typeref:typename:bool
+IsGoTest	pkg/project/project.go	/^	IsGoTest() bool$/;"	n	interface:project.IProject	typeref:typename:bool
+IsGoTest	pkg/project/project.go	/^func (proj *Project) IsGoTest() bool {$/;"	f	struct:project.Project	typeref:typename:bool
+IsGojen	pkg/project/project.go	/^	IsGojen              *bool     `yaml:"isGojen" json:"isGojen"`$/;"	m	struct:project.Project	typeref:typename:*bool
+IsIsGojen	pkg/project/project.go	/^	IsIsGojen() bool$/;"	n	interface:project.IProject	typeref:typename:bool
+IsIsGojen	pkg/project/project.go	/^func (proj *Project) IsIsGojen() bool {$/;"	f	struct:project.Project	typeref:typename:bool
+IsLicensed	pkg/project/project.go	/^	IsLicensed() bool$/;"	n	interface:project.IProject	typeref:typename:bool
+IsLicensed	pkg/project/project.go	/^func (proj *Project) IsLicensed() bool {$/;"	f	struct:project.Project	typeref:typename:bool
+IsRelease	pkg/project/project.go	/^	IsRelease() bool$/;"	n	interface:project.IProject	typeref:typename:bool
+IsRelease	pkg/project/project.go	/^func (proj *Project) IsRelease() bool {$/;"	f	struct:project.Project	typeref:typename:bool
+IssueComment	pkg/github/action.go	/^	IssueComment *IssueCommentOptions `yaml:"issue_comment,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*IssueCommentOptions
+IssueCommentOptions	pkg/github/action.go	/^type IssueCommentOptions struct {$/;"	s	package:github
+Issues	pkg/github/action.go	/^	Issues *IssuesOptions `yaml:"issues,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*IssuesOptions
+Issues	pkg/github/action.go	/^	Issues JobPermission `yaml:"issues,omitempty"`$/;"	m	struct:github.JobPermissions	typeref:typename:JobPermission
+IssuesOptions	pkg/github/action.go	/^type IssuesOptions struct {$/;"	s	package:github
+Job	pkg/github/action.go	/^type Job struct {$/;"	s	package:github
+JobDefaults	pkg/github/action.go	/^type JobDefaults struct {$/;"	s	package:github
+JobMatrix	pkg/github/action.go	/^type JobMatrix struct {$/;"	s	package:github
+JobPermission	pkg/github/action.go	/^type JobPermission string$/;"	t	package:github	typeref:typename:string
+JobPermission_NONE	pkg/github/action.go	/^	JobPermission_NONE  JobPermission = "NONE"$/;"	c	package:github	typeref:type:JobPermission
+JobPermission_READ	pkg/github/action.go	/^	JobPermission_READ  JobPermission = "READ"$/;"	c	package:github	typeref:type:JobPermission
+JobPermission_WRITE	pkg/github/action.go	/^	JobPermission_WRITE JobPermission = "WRITE"$/;"	c	package:github	typeref:type:JobPermission
+JobPermissions	pkg/github/action.go	/^type JobPermissions struct {$/;"	s	package:github
+JobStep	pkg/github/action.go	/^type JobStep struct {$/;"	s	package:github
+JobStepOutput	pkg/github/action.go	/^type JobStepOutput struct {$/;"	s	package:github
+JobStrategy	pkg/github/action.go	/^type JobStrategy struct {$/;"	s	package:github
+Jobs	pkg/github/action.go	/^	Jobs map[string]*Job `yaml:"jobs,omitempty,omitempty"`$/;"	m	struct:github.Action	typeref:typename:map[string]*Job
+Known issues	README.md	/^## Known issues$/;"	s	chapter:gojen
+Label	pkg/github/action.go	/^	Label *LabelOptions `yaml:"label,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*LabelOptions
+LabelOptions	pkg/github/action.go	/^type LabelOptions struct {$/;"	s	package:github
+Licensed	pkg/project/project.go	/^	Licensed     *bool   `yaml:"licensed" json:"licensed"`$/;"	m	struct:project.Project	typeref:typename:*bool
+LogFail	pkg/project/log.go	/^func LogFail(w io.Writer, str string, function string) {$/;"	f	package:project
+LogInfo	pkg/project/log.go	/^func LogInfo(w io.Writer, str string, function string) {$/;"	f	package:project
+LogSuccess	pkg/project/log.go	/^func LogSuccess(w io.Writer, str string, function string) {$/;"	f	package:project
+Matrix	pkg/github/action.go	/^	Matrix *JobMatrix `yaml:"matrix,omitempty"`$/;"	m	struct:github.JobStrategy	typeref:typename:*JobMatrix
+MaxParallel	pkg/github/action.go	/^	MaxParallel *float64 `yaml:"max-parallel,omitempty"`$/;"	m	struct:github.JobStrategy	typeref:typename:*float64
+Milestone	pkg/github/action.go	/^	Milestone *MilestoneOptions `yaml:"milestone,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*MilestoneOptions
+MilestoneOptions	pkg/github/action.go	/^type MilestoneOptions struct {$/;"	s	package:github
+Name	pkg/github/action.go	/^	Name *string `yaml:"name,omitempty"`$/;"	m	struct:github.Job	typeref:typename:*string
+Name	pkg/github/action.go	/^	Name *string `yaml:"name,omitempty"`$/;"	m	struct:github.JobStep	typeref:typename:*string
+Name	pkg/github/action.go	/^	Name string          `yaml:"name,omitempty,omitempty"`$/;"	m	struct:github.Action	typeref:typename:string
+Name	pkg/project/project.go	/^	Name        *string `yaml:"name" json:"name"`$/;"	m	struct:project.Project	typeref:typename:*string
+Needs	pkg/github/action.go	/^	Needs *[]*string `yaml:"needs,omitempty"`$/;"	m	struct:github.Job	typeref:typename:*[]*string
+Notes	README.md	/^## Notes$/;"	s	chapter:gojen
+On	pkg/github/action.go	/^	On   Triggers        `yaml:"on,omitempty,omitempty"`$/;"	m	struct:github.Action	typeref:typename:Triggers
+Options	pkg/github/action.go	/^	Options *[]*string `yaml:"options,omitempty"`$/;"	m	struct:github.ContainerOptions	typeref:typename:*[]*string
+OutputName	pkg/github/action.go	/^	OutputName *string `yaml:"output-name,omitempty"`$/;"	m	struct:github.JobStepOutput	typeref:typename:*string
+Outputs	pkg/github/action.go	/^	Outputs *map[string]*JobStepOutput `yaml:"outputs,omitempty"`$/;"	m	struct:github.Job	typeref:typename:*map[string]*JobStepOutput
+Packages	pkg/github/action.go	/^	Packages JobPermission `yaml:"packages,omitempty"`$/;"	m	struct:github.JobPermissions	typeref:typename:JobPermission
+PageBuild	pkg/github/action.go	/^	PageBuild *PageBuildOptions `yaml:"page_build,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*PageBuildOptions
+PageBuildOptions	pkg/github/action.go	/^type PageBuildOptions struct {$/;"	s	package:github
+Password	pkg/github/action.go	/^	Password *string `yaml:"password,omitempty"`$/;"	m	struct:github.ContainerCredentials	typeref:typename:*string
+Paths	pkg/github/action.go	/^	Paths *[]*string `yaml:"paths,omitempty"`$/;"	m	struct:github.PullRequestTargetOptions	typeref:typename:*[]*string
+Paths	pkg/github/action.go	/^	Paths *[]*string `yaml:"paths,omitempty"`$/;"	m	struct:github.PushOptions	typeref:typename:*[]*string
+Permissions	pkg/github/action.go	/^	Permissions *JobPermissions `yaml:"permissions,omitempty"`$/;"	m	struct:github.Job	typeref:typename:*JobPermissions
+Ports	pkg/github/action.go	/^	Ports *[]*float64 `yaml:"ports,omitempty"`$/;"	m	struct:github.ContainerOptions	typeref:typename:*[]*float64
+PrependStep	pkg/github/action.go	/^	PrependStep(jobName string, steps *JobStep) error$/;"	n	interface:github.IAction	typeref:typename:error
+PrependStep	pkg/github/action.go	/^func (a *Action) PrependStep(jobName string, steps *JobStep) error {$/;"	f	unknown:github.Action	typeref:typename:error
+Project	pkg/github/action.go	/^	Project *ProjectOptions `yaml:"project,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*ProjectOptions
+Project	pkg/project/project.go	/^type Project struct {$/;"	s	package:project
+ProjectCard	pkg/github/action.go	/^	ProjectCard *ProjectCardOptions `yaml:"project_card,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*ProjectCardOptions
+ProjectCardOptions	pkg/github/action.go	/^type ProjectCardOptions struct {$/;"	s	package:github
+ProjectColumn	pkg/github/action.go	/^	ProjectColumn *ProjectColumnOptions `yaml:"project_column,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*ProjectColumnOptions
+ProjectColumnOptions	pkg/github/action.go	/^type ProjectColumnOptions struct {$/;"	s	package:github
+ProjectOptions	pkg/github/action.go	/^type ProjectOptions struct {$/;"	s	package:github
+Public	pkg/github/action.go	/^	Public *PublicOptions `yaml:"public,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*PublicOptions
+PublicOptions	pkg/github/action.go	/^type PublicOptions struct {$/;"	s	package:github
+PullRequest	pkg/github/action.go	/^	PullRequest *PullRequestOptions `yaml:"pull_request,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*PullRequestOptions
+PullRequestOptions	pkg/github/action.go	/^type PullRequestOptions struct {$/;"	s	package:github
+PullRequestReview	pkg/github/action.go	/^	PullRequestReview *PullRequestReviewOptions `yaml:"pull_request_review,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*PullRequestReviewOptions
+PullRequestReviewComment	pkg/github/action.go	/^	PullRequestReviewComment *PullRequestReviewCommentOptions `yaml:"pull_request_review_comment,om/;"	m	struct:github.Triggers	typeref:typename:*PullRequestReviewCommentOptions
+PullRequestReviewCommentOptions	pkg/github/action.go	/^type PullRequestReviewCommentOptions struct {$/;"	s	package:github
+PullRequestReviewOptions	pkg/github/action.go	/^type PullRequestReviewOptions struct {$/;"	s	package:github
+PullRequestTarget	pkg/github/action.go	/^	PullRequestTarget *PullRequestTargetOptions `yaml:"pull-request-target,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*PullRequestTargetOptions
+PullRequestTargetOptions	pkg/github/action.go	/^type PullRequestTargetOptions struct {$/;"	s	package:github
+PullRequests	pkg/github/action.go	/^	PullRequests JobPermission `yaml:"pull_requests,omitempty"`$/;"	m	struct:github.JobPermissions	typeref:typename:JobPermission
+Push	pkg/github/action.go	/^	Push *PushOptions `yaml:"push,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*PushOptions
+PushOptions	pkg/github/action.go	/^type PushOptions struct {$/;"	s	package:github
+Readme	pkg/project/project.go	/^	Readme       *bool   `yaml:"readme" json:"readme"`$/;"	m	struct:project.Project	typeref:typename:*bool
+RegistryPackage	pkg/github/action.go	/^	RegistryPackage *RegistryPackageOptions `yaml:"registry-package,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*RegistryPackageOptions
+RegistryPackageOptions	pkg/github/action.go	/^type RegistryPackageOptions struct {$/;"	s	package:github
+Release	pkg/github/action.go	/^	Release *ReleaseOptions `yaml:"release,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*ReleaseOptions
+Release	pkg/project/project.go	/^	Release              *bool     `yaml:"release" json:"release"`$/;"	m	struct:project.Project	typeref:typename:*bool
+ReleaseOptions	pkg/github/action.go	/^type ReleaseOptions struct {$/;"	s	package:github
+Repository	pkg/project/project.go	/^	Repository  *string `yaml:"repository"  json:"repository"`$/;"	m	struct:project.Project	typeref:typename:*string
+RepositoryDispatch	pkg/github/action.go	/^	RepositoryDispatch *RepositoryDispatchOptions `yaml:"repository-dispatch,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*RepositoryDispatchOptions
+RepositoryDispatchOptions	pkg/github/action.go	/^type RepositoryDispatchOptions struct {$/;"	s	package:github
+RepositoryProjects	pkg/github/action.go	/^	RepositoryProjects JobPermission `yaml:"repository_projects,omitempty"`$/;"	m	struct:github.JobPermissions	typeref:typename:JobPermission
+Run	pkg/github/action.go	/^	Run *RunSettings `yaml:"run,omitempty"`$/;"	m	struct:github.JobDefaults	typeref:typename:*RunSettings
+Run	pkg/github/action.go	/^	Run *string `yaml:"run,omitempty"`$/;"	m	struct:github.JobStep	typeref:typename:*string
+RunBuild	pkg/project/project.go	/^	RunBuild() error$/;"	n	interface:project.IProject	typeref:typename:error
+RunBuild	pkg/project/project.go	/^func (proj *Project) RunBuild() error {$/;"	f	struct:project.Project	typeref:typename:error
+RunLinter	pkg/project/project.go	/^	RunLinter() error$/;"	n	interface:project.IProject	typeref:typename:error
+RunLinter	pkg/project/project.go	/^func (proj *Project) RunLinter() error {$/;"	f	struct:project.Project	typeref:typename:error
+RunSettings	pkg/github/action.go	/^type RunSettings struct {$/;"	s	package:github
+RunTest	pkg/project/project.go	/^	RunTest() error$/;"	n	interface:project.IProject	typeref:typename:error
+RunTest	pkg/project/project.go	/^func (proj *Project) RunTest() error {$/;"	f	struct:project.Project	typeref:typename:error
+RunsOn	pkg/github/action.go	/^	RunsOn *string `yaml:"runs-on,omitempty"`$/;"	m	struct:github.Job	typeref:typename:*string
+Schedule	pkg/github/action.go	/^	Schedule *[]*CronScheduleOptions `yaml:"schedule,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*[]*CronScheduleOptions
+SecurityEvents	pkg/github/action.go	/^	SecurityEvents JobPermission `yaml:"security_events,omitempty"`$/;"	m	struct:github.JobPermissions	typeref:typename:JobPermission
+Services	pkg/github/action.go	/^	Services *map[string]*ContainerOptions `yaml:"services,omitempty"`$/;"	m	struct:github.Job	typeref:typename:*map[string]*ContainerOptions
+SetCodeOwners	pkg/project/project.go	/^func (proj *Project) SetCodeOwners() error {$/;"	f	struct:project.Project	typeref:typename:error
+SetGitignore	pkg/project/project.go	/^	SetGitignore() error$/;"	n	interface:project.IProject	typeref:typename:error
+SetGitignore	pkg/project/project.go	/^func (proj *Project) SetGitignore() error {$/;"	f	struct:project.Project	typeref:typename:error
+SetupProject	pkg/project/project.go	/^	SetupProject() error$/;"	n	interface:project.IProject	typeref:typename:error
+SetupProject	pkg/project/project.go	/^func (proj *Project) SetupProject() error {$/;"	f	struct:project.Project	typeref:typename:error
+Shell	pkg/github/action.go	/^	Shell *string `yaml:"shell,omitempty"`$/;"	m	struct:github.RunSettings	typeref:typename:*string
+Status	pkg/github/action.go	/^	Status *StatusOptions `yaml:"status,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*StatusOptions
+StatusOptions	pkg/github/action.go	/^type StatusOptions struct {$/;"	s	package:github
+Statuses	pkg/github/action.go	/^	Statuses JobPermission `yaml:"statuses,omitempty"`$/;"	m	struct:github.JobPermissions	typeref:typename:JobPermission
+StepId	pkg/github/action.go	/^	StepId *string `yaml:"step-id,omitempty"`$/;"	m	struct:github.JobStepOutput	typeref:typename:*string
+Steps	pkg/github/action.go	/^	Steps *[]*JobStep `yaml:"steps,omitempty"`$/;"	m	struct:github.Job	typeref:typename:*[]*JobStep
+Strategy	pkg/github/action.go	/^	Strategy *JobStrategy `yaml:"strategy,omitempty"`$/;"	m	struct:github.Job	typeref:typename:*JobStrategy
+String	pkg/project/project.go	/^func String(str string) *string {$/;"	f	package:project	typeref:typename:*string
+StringSlice	pkg/project/project.go	/^func StringSlice(s []string) *[]string {$/;"	f	package:project	typeref:typename:*[]string
+Tags	pkg/github/action.go	/^	Tags *[]*string `yaml:"tags,omitempty"`$/;"	m	struct:github.PullRequestTargetOptions	typeref:typename:*[]*string
+Tags	pkg/github/action.go	/^	Tags *[]*string `yaml:"tags,omitempty"`$/;"	m	struct:github.PushOptions	typeref:typename:*[]*string
+Test	main_test.go	/^func Test(t *testing.T) {$/;"	f	package:main_test
+TestA	pkg/github/action_test.go	/^func TestA(t *testing.T) {$/;"	f	package:github_test
+TestEnvVars	pkg/project/project.go	/^	TestEnvVars          *[]string `yaml:"testEnvVars" json:"testEnvVars"`$/;"	m	struct:project.Project	typeref:typename:*[]string
+TestLog	pkg/project/log_test.go	/^func TestLog(t *testing.T) {$/;"	f	package:project_test
+TestProject	pkg/project/project_test.go	/^func TestProject(t *testing.T) {$/;"	f	package:project_test
+TimeoutMinutes	pkg/github/action.go	/^	TimeoutMinutes *float64 `yaml:"timeout-minutes,omitempty"`$/;"	m	struct:github.Job	typeref:typename:*float64
+TimeoutMinutes	pkg/github/action.go	/^	TimeoutMinutes *float64 `yaml:"timeout-minutes,omitempty"`$/;"	m	struct:github.JobStep	typeref:typename:*float64
+Triggers	pkg/github/action.go	/^type Triggers struct {$/;"	s	package:github
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.CheckRunOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.CheckSuiteOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.IssueCommentOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.IssuesOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.LabelOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.MilestoneOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.ProjectCardOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.ProjectColumnOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.ProjectOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.PullRequestOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.PullRequestReviewCommentOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.PullRequestReviewOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.PullRequestTargetOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.RegistryPackageOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.ReleaseOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.RepositoryDispatchOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.WatchOptions	typeref:typename:*[]*string
+Types	pkg/github/action.go	/^	Types *[]*string `yaml:"types,omitempty"`$/;"	m	struct:github.WorkflowRunOptions	typeref:typename:*[]*string
+Username	pkg/github/action.go	/^	Username *string `yaml:"username,omitempty"`$/;"	m	struct:github.ContainerCredentials	typeref:typename:*string
+Uses	pkg/github/action.go	/^	Uses *string `yaml:"uses,omitempty"`$/;"	m	struct:github.JobStep	typeref:typename:*string
+ValidateConfig	pkg/project/project.go	/^func (proj *Project) ValidateConfig() error {$/;"	f	struct:project.Project	typeref:typename:error
+Volumes	pkg/github/action.go	/^	Volumes *[]*string `yaml:"volumes,omitempty"`$/;"	m	struct:github.ContainerOptions	typeref:typename:*[]*string
+Watch	pkg/github/action.go	/^	Watch *WatchOptions `yaml:"watch,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*WatchOptions
+WatchOptions	pkg/github/action.go	/^type WatchOptions struct {$/;"	s	package:github
+With	pkg/github/action.go	/^	With *map[string]interface{} `yaml:"with,omitempty"`$/;"	m	struct:github.JobStep	typeref:typename:*map[string]interface{}
+WorkflowDispatch	pkg/github/action.go	/^	WorkflowDispatch *WorkflowDispatchOptions `yaml:"workflow-dispatch,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*WorkflowDispatchOptions
+WorkflowDispatchOptions	pkg/github/action.go	/^type WorkflowDispatchOptions struct {$/;"	s	package:github
+WorkflowEnv	pkg/project/project.go	/^	WorkflowEnv *map[string]*string `yaml:"workflowEnv" json:"workflowEnv"`$/;"	m	struct:project.Project	typeref:typename:*map[string]*string
+WorkflowRun	pkg/github/action.go	/^	WorkflowRun *WorkflowRunOptions `yaml:"workflow-run,omitempty"`$/;"	m	struct:github.Triggers	typeref:typename:*WorkflowRunOptions
+WorkflowRunOptions	pkg/github/action.go	/^type WorkflowRunOptions struct {$/;"	s	package:github
+WorkingDirectory	pkg/github/action.go	/^	WorkingDirectory *string `yaml:"working-directory,omitempty"`$/;"	m	struct:github.RunSettings	typeref:typename:*string
+WriteConfig	pkg/project/project.go	/^	WriteConfig() error$/;"	n	interface:project.IProject	typeref:typename:error
+WriteConfig	pkg/project/project.go	/^func (proj *Project) WriteConfig() error {$/;"	f	struct:project.Project	typeref:typename:error
+authorEmail	gojen.json	/^  "authorEmail": "aatman@auroville.org.in",$/;"	s
+authorName	gojen.json	/^  "authorName": "Hunter Thompson",$/;"	s
+authorOrganization	gojen.json	/^  "authorOrganization": "Hunter-Thompson",$/;"	s
+buildWorkflow	gojen.json	/^  "buildWorkflow": true,$/;"	b
+cfg	cmd/new.go	/^var cfg project.Project$/;"	v	package:cmd	typeref:typename:project.Project
+cmd	cmd/new.go	/^package cmd$/;"	p
+cmd	cmd/root.go	/^package cmd$/;"	p
+codeCov	gojen.json	/^  "codeCov": true,$/;"	b
+codeOwners	gojen.json	/^  "codeOwners": [$/;"	a
+defaultReleaseBranch	gojen.json	/^  "defaultReleaseBranch": "master",$/;"	s
+description	gojen.json	/^  "description": "Go project generator",$/;"	s
+getCommonSteps	pkg/project/project.go	/^	getCommonSteps() []*github.JobStep$/;"	n	interface:project.IProject	typeref:typename:[]*github.JobStep
+getCommonSteps	pkg/project/project.go	/^func (proj *Project) getCommonSteps() []*github.JobStep {$/;"	f	struct:project.Project	typeref:typename:[]*github.JobStep
+github	pkg/github/action.go	/^package github$/;"	p
+githubToken	gojen.json	/^  "githubToken": "GIT_TOKEN",$/;"	s
+github_test	pkg/github/action_test.go	/^package github_test$/;"	p
+gitignore	gojen.json	/^  "gitignore": [$/;"	a
+goBuild	gojen.json	/^    "goBuild": true$/;"	b
+goLinter	gojen.json	/^  "goLinter": true,$/;"	b
+goTest	gojen.json	/^  "goTest": true,$/;"	b
+goTestArgs	gojen.json	/^  "goTestArgs": [$/;"	a
+goVersion	gojen.json	/^  "goVersion": "1.17",$/;"	s
+gojen	README.md	/^# gojen$/;"	c
+init	cmd/new.go	/^func init() {$/;"	f	package:cmd
+init	cmd/root.go	/^func init() {$/;"	f	package:cmd
+isGojen	gojen.json	/^  "isGojen": true,$/;"	b
+licensed	gojen.json	/^  "licensed": true,$/;"	b
+main	main.go	/^func main() {$/;"	f	package:main
+main	main.go	/^package main$/;"	p
+main_test	main_test.go	/^package main_test$/;"	p
+name	gojen.json	/^  "name": "gojen",$/;"	s
+newCmd	cmd/new.go	/^var newCmd = &cobra.Command{$/;"	v	package:cmd
+project	cmd/root.go	/^	project "github.com\/Hunter-Thompson\/gojen\/pkg\/project"$/;"	P	package:github.com/Hunter-Thompson/gojen/pkg/project
+project	pkg/project/log.go	/^package project$/;"	p
+project	pkg/project/project.go	/^package project$/;"	p
+project_test	pkg/project/log_test.go	/^package project_test$/;"	p
+project_test	pkg/project/project_test.go	/^package project_test$/;"	p
+readme	gojen.json	/^  "readme": true,$/;"	b
+release	gojen.json	/^  "release": true,$/;"	b
+repository	gojen.json	/^  "repository": "github.com\/Hunter-Thompson\/gojen",$/;"	s
+rootCmd	cmd/root.go	/^var rootCmd = &cobra.Command{$/;"	v	package:cmd
+setCommonJobs	pkg/project/project.go	/^	setCommonJobs(wf github.IAction) (github.IAction, error)$/;"	n	interface:project.IProject	typeref:typename:(github.IAction, error)
+setCommonJobs	pkg/project/project.go	/^func (proj *Project) setCommonJobs(wf github.IAction) (github.IAction, error) {$/;"	f	struct:project.Project	typeref:typename:(github.IAction, error)

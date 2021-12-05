@@ -23,6 +23,8 @@ type IProject interface {
 	RunTest() error
 	RunBuild() error
 	RunLinter() error
+	setCommonJobs(wf github.IAction) (github.IAction, error)
+	getCommonSteps() []*github.JobStep
 
 	GetName() string
 	GetDescription() string
@@ -45,8 +47,8 @@ type IProject interface {
 	IsIsGojen() bool
 	IsCreateReadme() bool
 	IsCodeCov() bool
-	GetTestEnvVars() []string
 	GetGoBuildArgs() []string
+	GetWorkflowEnv() *map[string]*string
 }
 
 type Project struct {
@@ -74,11 +76,12 @@ type Project struct {
 	Gitignore  *[]string `yaml:"gitignore" json:"gitignore"`
 	CodeOwners *[]string `yaml:"codeOwners" json:"codeOwners"`
 
-	GoLinter    *bool     `yaml:"goLinter" json:"goLinter"`
-	GoTest      *bool     `yaml:"goTest" json:"goTest"`
-	GoTestArgs  *[]string `yaml:"goTestArgs" json:"goTestArgs"`
-	GoBuild     *bool     `yaml:"goBuild" json:"goBuild"`
-	GoBuildArgs *[]string `yaml:"goBuildArgs" json:"goBuildArgs"`
+	GoLinter    *bool               `yaml:"goLinter" json:"goLinter"`
+	GoTest      *bool               `yaml:"goTest" json:"goTest"`
+	GoTestArgs  *[]string           `yaml:"goTestArgs" json:"goTestArgs"`
+	GoBuild     *bool               `yaml:"goBuild" json:"goBuild"`
+	GoBuildArgs *[]string           `yaml:"goBuildArgs" json:"goBuildArgs"`
+	WorkflowEnv *map[string]*string `yaml:"workflowEnv" json:"workflowEnv"`
 }
 
 func InitProject() (IProject, error) {
@@ -301,6 +304,7 @@ func (proj *Project) RunTest() error {
 	}
 
 	LogSuccess(os.Stdout, "go test passed", "Test")
+	LogInfo(os.Stdout, string(out), "Test")
 	return nil
 }
 
@@ -415,7 +419,7 @@ func (proj *Project) RunLinter() error {
 
 }
 
-func getCommonSteps(isGojen bool, isCodeCov bool, gojenVersion string, goVersion string) []*github.JobStep {
+func (proj *Project) getCommonSteps() []*github.JobStep {
 
 	wf := []*github.JobStep{}
 
@@ -423,27 +427,30 @@ func getCommonSteps(isGojen bool, isCodeCov bool, gojenVersion string, goVersion
 		Name: String("Setup go"),
 		Uses: String("actions/setup-go@v2"),
 		With: &map[string]interface{}{
-			"go-version": goVersion,
+			"go-version": proj.GetGoVersion(),
 		},
 	})
 
-	if isGojen {
+	if proj.IsIsGojen() {
 		wf = append(wf, &github.JobStep{
 			Name: String("Build and run gojen"),
 			Run:  String("go build && ./gojen --ci"),
+			Env:  proj.GetWorkflowEnv(),
 		})
 	} else {
 		wf = append(wf, &github.JobStep{
 			Name: String("Install gojen"),
-			Run:  String(fmt.Sprintf("go install github.com/Hunter-Thompson/gojen@%s", gojenVersion)),
+			Run: String(fmt.Sprintf("go install github.com/Hunter-Thompson/gojen@%s",
+				proj.GetGojenVersion())),
 		})
 		wf = append(wf, &github.JobStep{
 			Name: String("Run gojen"),
 			Run:  String("gojen --ci"),
+			Env:  proj.GetWorkflowEnv(),
 		})
 	}
 
-	if isCodeCov {
+	if proj.IsCodeCov() {
 		wf = append(wf, &github.JobStep{
 			Name: String("Upload codecov coverage"),
 			Uses: String("codecov/codecov-action@v2"),
@@ -462,7 +469,7 @@ func getCommonSteps(isGojen bool, isCodeCov bool, gojenVersion string, goVersion
 	return wf
 }
 
-func setCommonJobs(wf github.IAction, isGojen bool, isCodeCov bool, gojenVersion string, goVersion string) (github.IAction, error) {
+func (proj *Project) setCommonJobs(wf github.IAction) (github.IAction, error) {
 	wf.AddJobs(map[string]*github.Job{
 		"golangci": {
 			Name:   String("lint"),
@@ -496,7 +503,7 @@ func setCommonJobs(wf github.IAction, isGojen bool, isCodeCov bool, gojenVersion
 		},
 	})
 
-	j := getCommonSteps(isGojen, isCodeCov, gojenVersion, goVersion)
+	j := proj.getCommonSteps()
 
 	for _, v := range j {
 		err := wf.AddStep("build", v)
@@ -530,7 +537,7 @@ func (proj *Project) CreateReleaseWorkflow() error {
 		},
 	})
 
-	wf, err = setCommonJobs(wf, proj.IsIsGojen(), proj.IsCodeCov(), proj.GetGojenVersion(), proj.GetGoVersion())
+	wf, err = proj.setCommonJobs(wf)
 	if err != nil {
 		return err
 	}
@@ -643,7 +650,7 @@ func (proj *Project) CreateBuildWorkflow() error {
 		PullRequest: &github.PullRequestOptions{},
 	})
 
-	wf, err = setCommonJobs(wf, proj.IsIsGojen(), proj.IsCodeCov(), proj.GetGojenVersion(), proj.GetGoVersion())
+	wf, err = proj.setCommonJobs(wf)
 	if err != nil {
 		return err
 	}
@@ -864,6 +871,13 @@ func (proj *Project) IsGoBuild() bool {
 		return true
 	}
 	return *proj.GoBuild
+}
+
+func (proj *Project) GetWorkflowEnv() *map[string]*string {
+	if proj.WorkflowEnv == nil {
+		return &map[string]*string{}
+	}
+	return proj.WorkflowEnv
 }
 
 func String(str string) *string {

@@ -13,7 +13,8 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: "1.17"
-    - name: Build and run gojen
+    - env: {}
+      name: Build and run gojen
       run: go build && ./gojen --ci
     - name: Upload codecov coverage
       uses: codecov/codecov-action@v2

@@ -34,6 +34,9 @@ func TestProject(t *testing.T) {
 			GoTestArgs:           project.StringSlice([]string{"-v", "-cover", "./..."}),
 			GoBuild:              project.Bool(true),
 			GoBuildArgs:          project.StringSlice([]string{""}),
+			WorkflowEnv: &map[string]*string{
+				"asd": project.String("testenv"),
+			},
 		},
 		{
 			Name:                 project.String("test1"),
@@ -53,6 +56,9 @@ func TestProject(t *testing.T) {
 			CodeCov:              project.Bool(true),
 			GoBuild:              project.Bool(true),
 			GoBuildArgs:          project.StringSlice([]string{""}),
+			WorkflowEnv: &map[string]*string{
+				"asd": project.String("testenv1"),
+			},
 		},
 		{
 			Name:                 project.String("test2"),
@@ -74,6 +80,9 @@ func TestProject(t *testing.T) {
 			GojenVersion:         project.String("1.2.0"),
 			GoBuild:              project.Bool(false),
 			GoBuildArgs:          project.StringSlice([]string{""}),
+			WorkflowEnv: &map[string]*string{
+				"asd": project.String("testenv2"),
+			},
 		},
 		{
 			Name:                 project.String("test3"),
@@ -94,6 +103,9 @@ func TestProject(t *testing.T) {
 			GojenVersion:         project.String("1.2.0"),
 			GoBuild:              project.Bool(true),
 			GoBuildArgs:          project.StringSlice([]string{""}),
+			WorkflowEnv: &map[string]*string{
+				"asd": project.String("testenv3"),
+			},
 		},
 		{
 			Name:                 project.String("test4"),
@@ -187,6 +199,12 @@ func TestProject(t *testing.T) {
 			if !reflect.DeepEqual(createdProject.GetGoBuildArgs(), *p.GoBuildArgs) {
 				t.Errorf("expected %s, got %s", *p.GoBuildArgs, createdProject.GetGoBuildArgs())
 			}
+
+			for k, v := range *createdProject.GetWorkflowEnv() {
+				if *v != *(*p.WorkflowEnv)[k] {
+					t.Errorf("expected %s, got %s", *(*p.WorkflowEnv)[k], *v)
+				}
+			}
 		}
 
 		if !reflect.DeepEqual(createdProject.GetGitignore(), *p.Gitignore) {
@@ -199,10 +217,6 @@ func TestProject(t *testing.T) {
 
 		err = createdProject.SetupProject()
 		if err != nil {
-			// a := strings.Contains(err.Error(), "package asd is not in GOROOT")
-			// if !a {
-			// 	t.Error(err)
-			// }
 			t.Error(err)
 		}
 
