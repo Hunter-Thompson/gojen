@@ -12,7 +12,8 @@
 0	gojen.json	/^    "* Hunter-Thompson"$/;"	s	array:codeOwners
 0	gojen.json	/^    "-cover",$/;"	s	array:goTestArgs
 0	gojen.json	/^    "test"$/;"	s	array:gitignore
-1	gojen.json	/^    ".\/..."$/;"	s	array:goTestArgs
+1	gojen.json	/^    "-v",$/;"	s	array:goTestArgs
+2	gojen.json	/^    ".\/..."$/;"	s	array:goTestArgs
 Action	pkg/github/action.go	/^type Action struct {$/;"	s	package:github
 Actions	pkg/github/action.go	/^	Actions JobPermission `yaml:"actions,omitempty"`$/;"	m	struct:github.JobPermissions	typeref:typename:JobPermission
 AddCodeCov	pkg/project/project.go	/^func (proj *Project) AddCodeCov() error {$/;"	f	struct:project.Project	typeref:typename:error
@@ -263,8 +264,9 @@ Tags	pkg/github/action.go	/^	Tags *[]*string `yaml:"tags,omitempty"`$/;"	m	struc
 Test	main_test.go	/^func Test(t *testing.T) {$/;"	f	package:main_test
 TestA	pkg/github/action_test.go	/^func TestA(t *testing.T) {$/;"	f	package:github_test
 TestEnvVars	pkg/project/project.go	/^	TestEnvVars          *[]string `yaml:"testEnvVars" json:"testEnvVars"`$/;"	m	struct:project.Project	typeref:typename:*[]string
+TestFProject	pkg/project/project_test.go	/^func TestFProject(t *testing.T) {$/;"	f	package:project_test
 TestLog	pkg/project/log_test.go	/^func TestLog(t *testing.T) {$/;"	f	package:project_test
-TestProject	pkg/project/project_test.go	/^func TestProject(t *testing.T) {$/;"	f	package:project_test
+TestSProject	pkg/project/project_test.go	/^func TestSProject(t *testing.T) {$/;"	f	package:project_test
 TimeoutMinutes	pkg/github/action.go	/^	TimeoutMinutes *float64 `yaml:"timeout-minutes,omitempty"`$/;"	m	struct:github.Job	typeref:typename:*float64
 TimeoutMinutes	pkg/github/action.go	/^	TimeoutMinutes *float64 `yaml:"timeout-minutes,omitempty"`$/;"	m	struct:github.JobStep	typeref:typename:*float64
 Triggers	pkg/github/action.go	/^type Triggers struct {$/;"	s	package:github

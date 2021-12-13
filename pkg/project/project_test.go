@@ -14,7 +14,7 @@ import (
 	"github.com/bradleyjkemp/cupaloy/v2"
 )
 
-func TestProject(t *testing.T) {
+func TestSProject(t *testing.T) {
 	t.Log("test")
 
 	// TODO: add tests for codeowners, workflow, gitignore, main.go files
@@ -76,7 +76,7 @@ func TestProject(t *testing.T) {
 			CodeOwners:           project.StringSlice([]string{"test1", "test1"}),
 			GoLinter:             project.Bool(false),
 			GoTest:               project.Bool(true),
-			GoTestArgs:           project.StringSlice([]string{"-v", "-cover"}),
+			GoTestArgs:           project.StringSlice([]string{"-v", "-covera"}),
 			CodeCov:              project.Bool(true),
 			GoBuild:              project.Bool(true),
 			GoBuildArgs:          project.StringSlice([]string{""}),
@@ -169,164 +169,192 @@ func TestProject(t *testing.T) {
 	}
 
 	for k, p := range projects {
+		t.Run(strconv.Itoa(k), func(t *testing.T) {
 
-		project.CI = true
+			fmt.Println(k)
 
-		dir, err := ioutil.TempDir("/tmp", p.GetName())
-		if err != nil {
-			t.Error(err.Error())
-		}
+			project.CI = true
 
-		pwd, err := os.Getwd()
-		if err != nil {
-			t.Error(err)
-		}
-
-		err = os.Chdir(dir)
-		if err != nil {
-			t.Error(err.Error())
-		}
-
-		err = p.WriteConfig()
-		if err != nil {
-			t.Error(err.Error())
-		}
-
-		createdProject, err := project.InitProject()
-		if err != nil {
-			t.Error(err.Error())
-		}
-
-		if createdProject.GetDescription() != *p.Description {
-			t.Errorf("expected %s, got %s", *p.Description, createdProject.GetDescription())
-		}
-
-		if createdProject.GetAuthorName() != *p.AuthorName {
-			t.Errorf("expected %s, got %s", *p.AuthorName, createdProject.GetAuthorName())
-		}
-
-		if createdProject.GetAuthorEmail() != *p.AuthorEmail {
-			t.Errorf("expected %s, got %s", *p.AuthorEmail, createdProject.GetAuthorEmail())
-		}
-
-		if createdProject.GetAuthorOrganization() != *p.AuthorOrganization {
-			t.Errorf("expected %s, got %s", *p.AuthorOrganization, createdProject.GetAuthorOrganization())
-		}
-
-		if createdProject.IsLicensed() != *p.Licensed {
-			t.Errorf("expected %t, got %t", *p.Licensed, createdProject.IsLicensed())
-		}
-
-		if createdProject.IsRelease() != *p.Release {
-			t.Errorf("expected %t, got %t", *p.Release, createdProject.IsRelease())
-		}
-
-		if createdProject.GetDefaultReleaseBranch() != *p.DefaultReleaseBranch {
-			t.Errorf("expected %s, got %s", *p.DefaultReleaseBranch, createdProject.GetDefaultReleaseBranch())
-		}
-
-		if createdProject.IsGoLinter() != *p.GoLinter {
-			t.Errorf("expected %t, got %t", *p.GoLinter, createdProject.IsGoLinter())
-		}
-
-		if *p.Name != "test4" {
-
-			if createdProject.IsGoTest() != *p.GoTest {
-				t.Errorf("expected %t, got %t", *p.GoTest, createdProject.IsGoTest())
+			dir, err := ioutil.TempDir("/tmp", p.GetName())
+			if err != nil {
+				t.Error(err.Error())
 			}
 
-			if createdProject.IsGoBuild() != *p.GoBuild {
-				t.Errorf("expected %t, got %t", *p.GoBuild, createdProject.IsGoBuild())
+			pwd, err := os.Getwd()
+			if err != nil {
+				t.Error(err)
 			}
 
-			if !reflect.DeepEqual(createdProject.GetGoTestArgs(), *p.GoTestArgs) {
-				t.Errorf("expected %s, got %s", *p.GoTestArgs, createdProject.GetGoTestArgs())
+			fmt.Println(pwd)
+
+			err = os.Chdir(dir)
+			if err != nil {
+				t.Error(err.Error())
 			}
 
-			if !reflect.DeepEqual(createdProject.GetGoBuildArgs(), *p.GoBuildArgs) {
-				t.Errorf("expected %s, got %s", *p.GoBuildArgs, createdProject.GetGoBuildArgs())
+			err = p.WriteConfig()
+			if err != nil {
+				t.Error(err.Error())
 			}
 
-			for k, v := range *createdProject.GetWorkflowEnv() {
-				if *v != *(*p.WorkflowEnv)[k] {
-					t.Errorf("expected %s, got %s", *(*p.WorkflowEnv)[k], *v)
+			createdProject, err := project.InitProject()
+			if err != nil {
+				t.Error(err.Error())
+			}
+
+			if createdProject.GetDescription() != *p.Description {
+				t.Errorf("expected %s, got %s", *p.Description, createdProject.GetDescription())
+			}
+
+			if createdProject.GetAuthorName() != *p.AuthorName {
+				t.Errorf("expected %s, got %s", *p.AuthorName, createdProject.GetAuthorName())
+			}
+
+			if createdProject.GetAuthorEmail() != *p.AuthorEmail {
+				t.Errorf("expected %s, got %s", *p.AuthorEmail, createdProject.GetAuthorEmail())
+			}
+
+			if createdProject.GetAuthorOrganization() != *p.AuthorOrganization {
+				t.Errorf("expected %s, got %s", *p.AuthorOrganization, createdProject.GetAuthorOrganization())
+			}
+
+			if createdProject.IsLicensed() != *p.Licensed {
+				t.Errorf("expected %t, got %t", *p.Licensed, createdProject.IsLicensed())
+			}
+
+			if createdProject.IsRelease() != *p.Release {
+				t.Errorf("expected %t, got %t", *p.Release, createdProject.IsRelease())
+			}
+
+			if createdProject.GetDefaultReleaseBranch() != *p.DefaultReleaseBranch {
+				t.Errorf("expected %s, got %s", *p.DefaultReleaseBranch, createdProject.GetDefaultReleaseBranch())
+			}
+
+			if createdProject.IsGoLinter() != *p.GoLinter {
+				t.Errorf("expected %t, got %t", *p.GoLinter, createdProject.IsGoLinter())
+			}
+
+			if *p.Name != "test4" {
+
+				if createdProject.IsGoTest() != *p.GoTest {
+					t.Errorf("expected %t, got %t", *p.GoTest, createdProject.IsGoTest())
+				}
+
+				if createdProject.IsGoBuild() != *p.GoBuild {
+					t.Errorf("expected %t, got %t", *p.GoBuild, createdProject.IsGoBuild())
+				}
+
+				if !reflect.DeepEqual(createdProject.GetGoTestArgs(), *p.GoTestArgs) {
+					t.Errorf("expected %s, got %s", *p.GoTestArgs, createdProject.GetGoTestArgs())
+				}
+
+				if !reflect.DeepEqual(createdProject.GetGoBuildArgs(), *p.GoBuildArgs) {
+					t.Errorf("expected %s, got %s", *p.GoBuildArgs, createdProject.GetGoBuildArgs())
+				}
+
+				for k, v := range *createdProject.GetWorkflowEnv() {
+					if *v != *(*p.WorkflowEnv)[k] {
+						t.Errorf("expected %s, got %s", *(*p.WorkflowEnv)[k], *v)
+					}
 				}
 			}
-		}
 
-		if !reflect.DeepEqual(createdProject.GetGitignore(), *p.Gitignore) {
-			t.Errorf("expected %s, got %s", *p.Gitignore, createdProject.GetGitignore())
-		}
-
-		if !reflect.DeepEqual(createdProject.GetCodeOwners(), *p.CodeOwners) {
-			t.Errorf("expected %s, got %s", *p.CodeOwners, createdProject.GetCodeOwners())
-		}
-
-		err = createdProject.SetupProject()
-		if err != nil {
-			t.Error(err)
-		}
-
-		err = os.Chdir(pwd)
-		if err != nil {
-			t.Error(err.Error())
-		}
-
-		codeOwnersFile := filepath.Join(dir, ".github", "CODEOWNERS")
-		if _, err := os.Stat(codeOwnersFile); os.IsNotExist(err) {
-			t.Errorf("expected %s to exist", codeOwnersFile)
-		}
-		codeOwnersContents, err := ioutil.ReadFile(codeOwnersFile)
-		if err != nil {
-			t.Error(err)
-		}
-		err = cupaloy.SnapshotMulti(strconv.Itoa(k)+"codeowners", (codeOwnersContents))
-		if err != nil {
-			t.Error(err)
-		}
-
-		gitIgnoreFile := filepath.Join(dir, ".gitignore")
-		if _, err := os.Stat(gitIgnoreFile); os.IsNotExist(err) {
-			t.Errorf("expected %s to exist", gitIgnoreFile)
-		}
-		gitIgnoreContents, err := ioutil.ReadFile(gitIgnoreFile)
-		if err != nil {
-			t.Error(err)
-		}
-		err = cupaloy.SnapshotMulti(strconv.Itoa(k)+"gitignore", (gitIgnoreContents))
-		if err != nil {
-			t.Error(err)
-		}
-
-		if createdProject.GetName() != "test1" {
-			buildWorkflowFile := filepath.Join(dir, ".github", "workflows", "build.yml")
-			if _, err := os.Stat(buildWorkflowFile); os.IsNotExist(err) {
-				t.Errorf("expected %s to exist", buildWorkflowFile)
+			if !reflect.DeepEqual(createdProject.GetGitignore(), *p.Gitignore) {
+				t.Errorf("expected %s, got %s", *p.Gitignore, createdProject.GetGitignore())
 			}
-			buildWorkflowContents, err := ioutil.ReadFile(buildWorkflowFile)
+
+			if !reflect.DeepEqual(createdProject.GetCodeOwners(), *p.CodeOwners) {
+				t.Errorf("expected %s, got %s", *p.CodeOwners, createdProject.GetCodeOwners())
+			}
+
+			if k == 1 {
+				p := fmt.Sprintf("%s/go.mod", dir)
+				err := ioutil.WriteFile(p, []byte{}, 0644)
+
+				if err != nil {
+					t.Error(err)
+				}
+			}
+
+			err = createdProject.SetupProject()
+			if err != nil {
+				if k == 1 {
+					if err.Error() == "logged to stderr" {
+						err = os.Chdir(pwd)
+						if err != nil {
+							t.Error(err.Error())
+						}
+						t.Skip()
+					}
+				}
+				t.Error(err)
+			}
+
+			err = os.Chdir(pwd)
+			if err != nil {
+				t.Error(err.Error())
+			}
+
+			codeOwnersFile := filepath.Join(dir, ".github", "CODEOWNERS")
+			if _, err := os.Stat(codeOwnersFile); os.IsNotExist(err) {
+				t.Errorf("expected %s to exist", codeOwnersFile)
+			}
+			codeOwnersContents, err := ioutil.ReadFile(codeOwnersFile)
 			if err != nil {
 				t.Error(err)
 			}
-			err = cupaloy.SnapshotMulti(strconv.Itoa(k)+"buildworkflow", (buildWorkflowContents))
+			err = cupaloy.SnapshotMulti(strconv.Itoa(k)+"codeowners", (codeOwnersContents))
 			if err != nil {
 				t.Error(err)
 			}
 
-			releaseWorfklowFile := filepath.Join(dir, ".github", "workflows", "release.yml")
-			if _, err := os.Stat(releaseWorfklowFile); os.IsNotExist(err) {
-				t.Errorf("expected %s to exist", releaseWorfklowFile)
+			gitIgnoreFile := filepath.Join(dir, ".gitignore")
+			if _, err := os.Stat(gitIgnoreFile); os.IsNotExist(err) {
+				t.Errorf("expected %s to exist", gitIgnoreFile)
 			}
-			releaseWorfklowContents, err := ioutil.ReadFile(releaseWorfklowFile)
+			gitIgnoreContents, err := ioutil.ReadFile(gitIgnoreFile)
 			if err != nil {
 				t.Error(err)
 			}
-			err = cupaloy.SnapshotMulti(strconv.Itoa(k)+"releaseworkflow", (releaseWorfklowContents))
+			err = cupaloy.SnapshotMulti(strconv.Itoa(k)+"gitignore", (gitIgnoreContents))
 			if err != nil {
 				t.Error(err)
 			}
-		}
+
+			if createdProject.GetName() != "test1" {
+				buildWorkflowFile := filepath.Join(dir, ".github", "workflows", "build.yml")
+				if _, err := os.Stat(buildWorkflowFile); os.IsNotExist(err) {
+					t.Errorf("expected %s to exist", buildWorkflowFile)
+				}
+				buildWorkflowContents, err := ioutil.ReadFile(buildWorkflowFile)
+				if err != nil {
+					t.Error(err)
+				}
+				err = cupaloy.SnapshotMulti(strconv.Itoa(k)+"buildworkflow", (buildWorkflowContents))
+				if err != nil {
+					t.Error(err)
+				}
+
+				releaseWorfklowFile := filepath.Join(dir, ".github", "workflows", "release.yml")
+				if _, err := os.Stat(releaseWorfklowFile); os.IsNotExist(err) {
+					t.Errorf("expected %s to exist", releaseWorfklowFile)
+				}
+				releaseWorfklowContents, err := ioutil.ReadFile(releaseWorfklowFile)
+				if err != nil {
+					t.Error(err)
+				}
+				err = cupaloy.SnapshotMulti(strconv.Itoa(k)+"releaseworkflow", (releaseWorfklowContents))
+				if err != nil {
+					t.Error(err)
+				}
+			}
+
+		})
 	}
 
+}
+
+func TestFProject(t *testing.T) {
 	failedProjects := []project.Project{
 		{
 			Name:                 project.String("test4"),
@@ -360,29 +388,30 @@ func TestProject(t *testing.T) {
 		},
 	}
 
-	for _, p := range failedProjects {
-		project.CI = true
-		dir, err := ioutil.TempDir("/tmp", "failedtests")
-		if err != nil {
-			t.Error(err.Error())
-		}
+	for k, p := range failedProjects {
+		t.Run(strconv.Itoa(k), func(t *testing.T) {
+			project.CI = true
+			dir, err := ioutil.TempDir("/tmp", "failedtests")
+			if err != nil {
+				t.Error(err.Error())
+			}
 
-		err = os.Chdir(dir)
-		if err != nil {
-			t.Error(err.Error())
-		}
+			err = os.Chdir(dir)
+			if err != nil {
+				t.Error(err.Error())
+			}
 
-		err = p.WriteConfig()
-		if err != nil {
-			t.Error(err.Error())
-		}
+			err = p.WriteConfig()
+			if err != nil {
+				t.Error(err.Error())
+			}
 
-		_, err = project.InitProject()
-		if err == nil {
-			fmt.Println(p.GetDescription())
-			t.Error("expected error, got nil")
-		}
+			_, err = project.InitProject()
+			if err == nil {
+				fmt.Println(p.GetDescription())
+				t.Error("expected error, got nil")
+			}
 
+		})
 	}
-
 }
