@@ -24,6 +24,7 @@
   "githubToken": "GIT_TOKEN",
   "goTestArgs": [
     "-cover",
+    "-v",
     "./..."
     ],
     "goBuild": true
