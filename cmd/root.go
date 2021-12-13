@@ -57,6 +57,9 @@ to quickly create a Cobra application.`,
 
 		err = proj.SetupProject()
 		if err != nil {
+			if err.Error() == "logged to stderr" {
+				os.Exit(1)
+			}
 			fmt.Println(err.Error())
 			os.Exit(1)
 		}

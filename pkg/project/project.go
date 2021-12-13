@@ -239,7 +239,7 @@ func main () {
 		err := modInit.Run()
 		if err != nil {
 			LogFail(os.Stderr, "running go mod vendor init failed", "Setup")
-			return errors.New("running go mod init failed")
+			return errors.New("logged to stderr")
 		}
 	}
 
@@ -255,7 +255,7 @@ func main () {
 	err = vendor.Run()
 	if err != nil {
 		LogFail(os.Stderr, "running go mod vendor failed", "Setup")
-		return errors.New("running go mod vendor failed")
+		return errors.New("logged to stderr")
 	}
 
 	LogInfo(os.Stdout, "running go mod tidy", "Setup")
@@ -266,7 +266,7 @@ func main () {
 	err = tidy.Run()
 	if err != nil {
 		LogFail(os.Stderr, "running go mod tidy failed", "Setup")
-		return errors.New("running go mod tidy failed")
+		return errors.New("logged to stderr")
 	}
 
 	LogInfo(os.Stdout, "running go fmt", "Setup")
@@ -277,7 +277,7 @@ func main () {
 	err = gofmt.Run()
 	if err != nil {
 		LogFail(os.Stderr, "running go fmt failed", "Setup")
-		return errors.New("running go fmt failed")
+		return errors.New("logged to stderr")
 	}
 
 	if !CI {
@@ -323,7 +323,7 @@ func (proj *Project) RunTest() error {
 	err := test.Run()
 	if err != nil {
 		LogFail(os.Stderr, "running go test failed", "Test")
-		return errors.New("running go test failed")
+		return errors.New("logged to stderr")
 	}
 
 	LogSuccess(os.Stdout, "go test passed", "Test")
@@ -346,7 +346,7 @@ func (proj *Project) RunBuild() error {
 	err := build.Run()
 	if err != nil {
 		LogFail(os.Stderr, "running go build failed", "Build")
-		return errors.New("running go build failed")
+		return errors.New("logged to stderr")
 	}
 
 	LogSuccess(os.Stdout, "go build passed", "Build")
@@ -440,7 +440,7 @@ func (proj *Project) RunLinter() error {
 	err := lint.Run()
 	if err != nil {
 		LogFail(os.Stderr, "running golint failed", "Lint")
-		return errors.New("running golint failed")
+		return errors.New("logged to stderr")
 	}
 
 	LogSuccess(os.Stdout, "go linter passed", "Lint")
