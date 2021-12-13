@@ -231,10 +231,15 @@ func main () {
 	}
 
 	if _, err := os.Stat(pwd + "/go.mod"); errors.Is(err, os.ErrNotExist) {
-		out, err := modInit.CombinedOutput()
+		LogInfo(os.Stdout, "running go mod init", "Setup")
+
+		modInit.Stdout = os.Stdout
+		modInit.Stderr = os.Stderr
+
+		err := modInit.Run()
 		if err != nil {
-			LogFail(os.Stderr, "running go mod init failed", "Setup")
-			return errors.New(string(out))
+			LogFail(os.Stderr, "running go mod vendor init failed", "Setup")
+			return errors.New("running go mod init failed")
 		}
 	}
 
@@ -243,24 +248,36 @@ func main () {
 	}
 
 	LogInfo(os.Stdout, "running go mod vendor", "Setup")
-	out, err := vendor.CombinedOutput()
+
+	vendor.Stdout = os.Stdout
+	vendor.Stderr = os.Stderr
+
+	err = vendor.Run()
 	if err != nil {
 		LogFail(os.Stderr, "running go mod vendor failed", "Setup")
-		return errors.New(string(out))
+		return errors.New("running go mod vendor failed")
 	}
 
 	LogInfo(os.Stdout, "running go mod tidy", "Setup")
-	out, err = tidy.CombinedOutput()
+
+	tidy.Stdout = os.Stdout
+	tidy.Stderr = os.Stderr
+
+	err = tidy.Run()
 	if err != nil {
 		LogFail(os.Stderr, "running go mod tidy failed", "Setup")
-		return errors.New(string(out))
+		return errors.New("running go mod tidy failed")
 	}
 
 	LogInfo(os.Stdout, "running go fmt", "Setup")
-	out, err = gofmt.CombinedOutput()
+
+	gofmt.Stdout = os.Stdout
+	gofmt.Stderr = os.Stderr
+
+	err = gofmt.Run()
 	if err != nil {
 		LogFail(os.Stderr, "running go fmt failed", "Setup")
-		return errors.New(string(out))
+		return errors.New("running go fmt failed")
 	}
 
 	if !CI {
@@ -294,36 +311,42 @@ func (proj *Project) RunTest() error {
 	if proj.GoTestArgs == nil {
 		proj.GoTestArgs = &[]string{}
 	}
+	*proj.GoTestArgs = append([]string{"test"}, *proj.GoTestArgs...)
 
 	LogInfo(os.Stdout, "running go test", "Test")
 
-	*proj.GoTestArgs = append([]string{"test"}, *proj.GoTestArgs...)
+	test := exec.Command("go", *proj.GoTestArgs...)
 
-	out, err := exec.Command("go", *proj.GoTestArgs...).CombinedOutput()
+	test.Stdout = os.Stdout
+	test.Stderr = os.Stderr
+
+	err := test.Run()
 	if err != nil {
 		LogFail(os.Stderr, "running go test failed", "Test")
-		return errors.New(string(out))
+		return errors.New("running go test failed")
 	}
 
 	LogSuccess(os.Stdout, "go test passed", "Test")
-	LogInfo(os.Stdout, string(out), "Test")
 	return nil
 }
 
 func (proj *Project) RunBuild() error {
-	LogInfo(os.Stdout, "running go build", "Build")
 	if proj.GoBuildArgs == nil {
 		proj.GoBuildArgs = &[]string{}
 	}
-
-	proj.GoTestArgs = &[]string{}
-
 	*proj.GoBuildArgs = append([]string{"build"}, *proj.GoBuildArgs...)
 
-	out, err := exec.Command("go", *proj.GoBuildArgs...).CombinedOutput()
+	LogInfo(os.Stdout, "running go build", "Build")
+
+	build := exec.Command("go", *proj.GoBuildArgs...)
+
+	build.Stdout = os.Stdout
+	build.Stderr = os.Stderr
+
+	err := build.Run()
 	if err != nil {
 		LogFail(os.Stderr, "running go build failed", "Build")
-		return errors.New(string(out))
+		return errors.New("running go build failed")
 	}
 
 	LogSuccess(os.Stdout, "go build passed", "Build")
@@ -410,10 +433,14 @@ func (proj *Project) RunLinter() error {
 
 	LogInfo(os.Stdout, "running go linter", "Lint")
 
-	out, err := exec.Command("golangci-lint", "run").CombinedOutput()
+	lint := exec.Command("golangci-lint", "run")
+	lint.Stdout = os.Stdout
+	lint.Stderr = os.Stderr
+
+	err := lint.Run()
 	if err != nil {
 		LogFail(os.Stderr, "running golint failed", "Lint")
-		return errors.New(string(out))
+		return errors.New("running golint failed")
 	}
 
 	LogSuccess(os.Stdout, "go linter passed", "Lint")
