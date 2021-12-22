@@ -32,6 +32,28 @@ Is triggered on a push to the `defaultReleaseBranch` inside `gojen.json`.
 
 Github workflow that runs the `golangci-lint` action, followed by `gojen`. Is triggered on pull request creation.
 
+**License**
+
+```
+"Apache-2.0"
+"Artistic-2.0"
+"GPL-3.0-WITH-GCC-exception-3.1"
+"LGPL-2.1-or-later"
+"MIT-0"
+"MPL-2.0"
+"PHP-3.01"
+"Unlicense"
+"ZPL-2.1"
+"Artistic-1.0"
+"GPL-2.0-or-later"
+"GPL-3.0-or-later"
+"LGPL-3.0-or-later"
+"MIT"
+"OFL-1.1"
+"Ruby"
+"WTFPL"
+```
+
 **Gitignore**
 
 Define all your gitignore entries inside `gojen.json`
@@ -72,7 +94,7 @@ printf "{
   "authorName": "Hunter Thompson",
   "authorEmail": "hunter@example.com",
   "authorOrganization": "Hunter-Thompson",
-  "licensed": true,
+  "license": "Apache-2.0",
   "readme": true,
   "release": true,
   "buildWorkflow": true,
