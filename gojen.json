@@ -5,7 +5,7 @@
   "authorName": "Hunter Thompson",
   "authorEmail": "aatman@auroville.org.in",
   "authorOrganization": "Hunter-Thompson",
-  "licensed": true,
+  "license": "Apache-2.0",
   "release": true,
   "defaultReleaseBranch": "master",
   "gitignore": [

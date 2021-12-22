@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/Hunter-Thompson/gojen/pkg/github"
+	"github.com/Hunter-Thompson/gojen/pkg/license"
 )
 
 var CI bool
@@ -32,7 +33,6 @@ type IProject interface {
 	GetAuthorName() string
 	GetAuthorEmail() string
 	GetAuthorOrganization() string
-	IsLicensed() bool
 	IsRelease() bool
 	IsGoBuild() bool
 	GetDefaultReleaseBranch() string
@@ -49,6 +49,7 @@ type IProject interface {
 	IsCodeCov() bool
 	GetGoBuildArgs() []string
 	GetWorkflowEnv() *map[string]*string
+	GetLicense() string
 }
 
 type Project struct {
@@ -61,9 +62,9 @@ type Project struct {
 	AuthorEmail        *string `yaml:"authorEmail" json:"authorEmail"`
 	AuthorOrganization *string `yaml:"authorOrganization" json:"authorOrganization"`
 
-	Licensed     *bool   `yaml:"licensed" json:"licensed"`
 	Readme       *bool   `yaml:"readme" json:"readme"`
 	GojenVersion *string `yaml:"gojenVersion" json:"gojenVersion"`
+	License      *string `yaml:"license" json:"license"`
 
 	Release              *bool     `yaml:"release" json:"release"`
 	BuildWorkflow        *bool     `yaml:"buildWorkflow" json:"buildWorkflow"`
@@ -168,6 +169,11 @@ func (proj *Project) SetupProject() error {
 		}
 	}
 
+	err := proj.AddLicense()
+	if err != nil {
+		return err
+	}
+
 	if proj.IsCreateReadme() {
 		err := proj.CreateReadme()
 		if err != nil {
@@ -196,7 +202,7 @@ func (proj *Project) SetupProject() error {
 		}
 	}
 
-	err := proj.SetGitignore()
+	err = proj.SetGitignore()
 	if err != nil {
 		return err
 	}
@@ -352,6 +358,55 @@ func (proj *Project) RunBuild() error {
 	LogSuccess(os.Stdout, "go build passed", "Build")
 
 	return nil
+}
+
+func (proj *Project) AddLicense() error {
+	if proj.GetLicense() == "" {
+		return nil
+	}
+
+	pwd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	if _, err := os.Stat(pwd + "/LICENSE"); errors.Is(err, os.ErrNotExist) {
+		LogInfo(os.Stdout, "adding license", "Setup")
+		licenses := []string{
+			"Apache-2.0",
+			"Artistic-2.0",
+			"GPL-3.0-WITH-GCC-exception-3.1",
+			"LGPL-2.1-or-later  ",
+			"MIT-0",
+			"MPL-2.0",
+			"PHP-3.01",
+			"Unlicense",
+			"ZPL-2.1",
+			"Artistic-1.0",
+			"GPL-2.0-or-later",
+			"GPL-3.0-or-later",
+			"LGPL-3.0-or-later",
+			"MIT",
+			"OFL-1.1",
+			"Ruby",
+			"WTFPL",
+		}
+
+		if Contains(licenses, proj.GetLicense()) {
+			b, err := license.Asset("license-text/" + proj.GetLicense() + ".txt")
+			if err != nil {
+				return err
+			}
+
+			err = ioutil.WriteFile(pwd+"/LICENSE", b, 0644)
+			if err != nil {
+				return err
+			}
+		}
+
+	}
+	return nil
+
 }
 
 func (proj *Project) SetGitignore() error {
@@ -797,13 +852,6 @@ func (proj *Project) GetAuthorOrganization() string {
 	return *proj.AuthorOrganization
 }
 
-func (proj *Project) IsLicensed() bool {
-	if proj.Licensed == nil {
-		return false
-	}
-	return *proj.Licensed
-}
-
 func (proj *Project) IsRelease() bool {
 	if proj.Release == nil {
 		return false
@@ -903,6 +951,13 @@ func (proj *Project) GetGoBuildArgs() []string {
 	return *proj.GoBuildArgs
 }
 
+func (proj *Project) GetLicense() string {
+	if proj.License == nil {
+		return ""
+	}
+	return *proj.License
+}
+
 func (proj *Project) IsGoBuild() bool {
 	if proj.GoBuild == nil {
 		return true
@@ -931,4 +986,13 @@ func Int(i int) *int {
 
 func StringSlice(s []string) *[]string {
 	return &s
+}
+
+func Contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
