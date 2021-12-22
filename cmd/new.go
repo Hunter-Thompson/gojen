@@ -104,12 +104,12 @@ func init() {
 	cfg.AuthorName = newCmd.Flags().String("authorname", "", "name of Author")
 	cfg.AuthorEmail = newCmd.Flags().String("authoremail", "", "email of Author")
 	cfg.AuthorOrganization = newCmd.Flags().String("authororganization", "", "author github organization")
-	cfg.Licensed = newCmd.Flags().Bool("licensed", false, "add a license")
 	cfg.Release = newCmd.Flags().Bool("release", false, "setup go-semantic-release and upload binaries")
 	cfg.DefaultReleaseBranch = newCmd.Flags().String("defaultreleasebranch", "master", "default branch to release from")
 	cfg.Gitignore = newCmd.Flags().StringSlice("gitignore", []string{}, "list of gitignore values")
 	cfg.CodeOwners = newCmd.Flags().StringSlice("codeowners", []string{}, "list of codeowner values")
 	cfg.GoLinter = newCmd.Flags().Bool("golinter", false, "enable golinter")
 	cfg.GoTest = newCmd.Flags().Bool("gotest", true, "enable go test")
+	cfg.License = newCmd.Flags().String("license", "", "license name")
 	cfg.GoTestArgs = newCmd.Flags().StringSlice("gotestargs", []string{}, "arguments for go test")
 }

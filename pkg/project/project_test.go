@@ -27,8 +27,8 @@ func TestSProject(t *testing.T) {
 			AuthorName:           project.String("test"),
 			AuthorEmail:          project.String("test"),
 			AuthorOrganization:   project.String("test"),
-			Licensed:             project.Bool(true),
 			Release:              project.Bool(true),
+			License:              project.String("Apache-2.0"),
 			DefaultReleaseBranch: project.String("test"),
 			BuildWorkflow:        project.Bool(true),
 			Gitignore:            project.StringSlice([]string{"test", "test"}),
@@ -69,8 +69,8 @@ func TestSProject(t *testing.T) {
 			AuthorName:           project.String("test1"),
 			AuthorEmail:          project.String("test1"),
 			AuthorOrganization:   project.String("test1"),
-			Licensed:             project.Bool(true),
 			Release:              project.Bool(false),
+			License:              project.String("MIT-2.0"),
 			DefaultReleaseBranch: project.String("test1"),
 			Gitignore:            project.StringSlice([]string{"test1", "test1"}),
 			CodeOwners:           project.StringSlice([]string{"test1", "test1"}),
@@ -111,8 +111,8 @@ func TestSProject(t *testing.T) {
 			AuthorName:           project.String("test2"),
 			BuildWorkflow:        project.Bool(true),
 			AuthorEmail:          project.String("test2"),
+			License:              project.String("MIT-0"),
 			AuthorOrganization:   project.String("test2"),
-			Licensed:             project.Bool(true),
 			Release:              project.Bool(true),
 			DefaultReleaseBranch: project.String("test2"),
 			Gitignore:            project.StringSlice([]string{"test2", "test2"}),
@@ -135,8 +135,8 @@ func TestSProject(t *testing.T) {
 			Repository:           project.String("github.com/test/test3"),
 			BuildWorkflow:        project.Bool(true),
 			AuthorEmail:          project.String("test3"),
+			License:              project.String("GPL-3.0-or-later"),
 			AuthorOrganization:   project.String("test3"),
-			Licensed:             project.Bool(true),
 			Release:              project.Bool(true),
 			DefaultReleaseBranch: project.String("test3"),
 			Gitignore:            project.StringSlice([]string{"test3", "test3"}),
@@ -158,7 +158,7 @@ func TestSProject(t *testing.T) {
 			AuthorName:           project.String("test4"),
 			AuthorEmail:          project.String("test4"),
 			AuthorOrganization:   project.String("test4"),
-			Licensed:             project.Bool(true),
+			License:              project.String("GPL-2.0-or-later"),
 			Release:              project.Bool(true),
 			DefaultReleaseBranch: project.String("test4"),
 			BuildWorkflow:        project.Bool(true),
@@ -216,10 +216,6 @@ func TestSProject(t *testing.T) {
 
 			if createdProject.GetAuthorOrganization() != *p.AuthorOrganization {
 				t.Errorf("expected %s, got %s", *p.AuthorOrganization, createdProject.GetAuthorOrganization())
-			}
-
-			if createdProject.IsLicensed() != *p.Licensed {
-				t.Errorf("expected %t, got %t", *p.Licensed, createdProject.IsLicensed())
 			}
 
 			if createdProject.IsRelease() != *p.Release {
@@ -321,6 +317,16 @@ func TestSProject(t *testing.T) {
 				t.Error(err)
 			}
 
+			license, err := ioutil.ReadFile(filepath.Join(dir, "LICENSE"))
+			if err != nil {
+				t.Error(err)
+			}
+
+			err = cupaloy.SnapshotMulti(strconv.Itoa(k)+"LICENSE", (license))
+			if err != nil {
+				t.Error(err)
+			}
+
 			if createdProject.GetName() != "test1" {
 				buildWorkflowFile := filepath.Join(dir, ".github", "workflows", "build.yml")
 				if _, err := os.Stat(buildWorkflowFile); os.IsNotExist(err) {
@@ -362,7 +368,6 @@ func TestFProject(t *testing.T) {
 			AuthorName:           project.String("test4"),
 			AuthorEmail:          project.String("test4"),
 			AuthorOrganization:   project.String("test4"),
-			Licensed:             project.Bool(true),
 			Release:              project.Bool(false),
 			DefaultReleaseBranch: project.String("test4"),
 			Gitignore:            project.StringSlice([]string{"test4", "test4"}),
@@ -377,7 +382,6 @@ func TestFProject(t *testing.T) {
 			AuthorName:           project.String("test5"),
 			AuthorEmail:          project.String("test5"),
 			AuthorOrganization:   project.String("test5"),
-			Licensed:             project.Bool(true),
 			Release:              project.Bool(false),
 			DefaultReleaseBranch: project.String("test5"),
 			Gitignore:            project.StringSlice([]string{"test4", "test4"}),
