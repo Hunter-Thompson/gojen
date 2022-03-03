@@ -77,6 +77,9 @@ type Project struct {
 	Gitignore  *[]string `yaml:"gitignore" json:"gitignore"`
 	CodeOwners *[]string `yaml:"codeOwners" json:"codeOwners"`
 
+	SkipVendor *bool `yaml:"skipVendor" json:"skipVendor"`
+	SkipTidy   *bool `yaml:"skipTidy" json:"skipTidy"`
+
 	GoLinter     *bool               `yaml:"goLinter" json:"goLinter"`
 	GoTest       *bool               `yaml:"goTest" json:"goTest"`
 	GoTestArgs   *[]string           `yaml:"goTestArgs" json:"goTestArgs"`
@@ -102,7 +105,6 @@ func InitProject() (IProject, error) {
 }
 
 func (proj *Project) ValidateConfig() error {
-
 	if proj.GetName() == "" {
 		return errors.New("name is missing in config")
 	}
@@ -115,7 +117,6 @@ func (proj *Project) ValidateConfig() error {
 }
 
 func GetConfig() (*Project, error) {
-
 	proj := &Project{}
 
 	pwd, err := os.Getwd()
@@ -139,7 +140,6 @@ func GetConfig() (*Project, error) {
 }
 
 func (proj *Project) WriteConfig() error {
-
 	pwd, err := os.Getwd()
 	if err != nil {
 		return err
@@ -152,7 +152,7 @@ func (proj *Project) WriteConfig() error {
 		return err
 	}
 
-	err = ioutil.WriteFile(cfgPath, b, 0644)
+	err = ioutil.WriteFile(cfgPath, b, 0o644)
 	if err != nil {
 		return err
 	}
@@ -161,7 +161,6 @@ func (proj *Project) WriteConfig() error {
 }
 
 func (proj *Project) SetupProject() error {
-
 	if proj.IsCodeCov() {
 		err := proj.AddCodeCov()
 		if err != nil {
@@ -226,7 +225,7 @@ import (
 func main () {
 	fmt.Println("project created with gojen, have fun :-)")
 }`
-		err := ioutil.WriteFile(pwd+"/main.go", []byte(c+"\n"), 0644)
+		err := ioutil.WriteFile(pwd+"/main.go", []byte(c+"\n"), 0o644)
 		if err != nil {
 			return err
 		}
@@ -253,26 +252,30 @@ func main () {
 		return err
 	}
 
-	LogInfo(os.Stdout, "running go mod vendor", "Setup")
+	if proj.SkipVendor == nil || !*proj.SkipVendor {
+		LogInfo(os.Stdout, "running go mod vendor", "Setup")
 
-	vendor.Stdout = os.Stdout
-	vendor.Stderr = os.Stderr
+		vendor.Stdout = os.Stdout
+		vendor.Stderr = os.Stderr
 
-	err = vendor.Run()
-	if err != nil {
-		LogFail(os.Stderr, "running go mod vendor failed", "Setup")
-		return errors.New("logged to stderr")
+		err = vendor.Run()
+		if err != nil {
+			LogFail(os.Stderr, "running go mod vendor failed", "Setup")
+			return errors.New("logged to stderr")
+		}
 	}
 
-	LogInfo(os.Stdout, "running go mod tidy", "Setup")
+	if proj.SkipTidy == nil || !*proj.SkipTidy {
+		LogInfo(os.Stdout, "running go mod tidy", "Setup")
 
-	tidy.Stdout = os.Stdout
-	tidy.Stderr = os.Stderr
+		tidy.Stdout = os.Stdout
+		tidy.Stderr = os.Stderr
 
-	err = tidy.Run()
-	if err != nil {
-		LogFail(os.Stderr, "running go mod tidy failed", "Setup")
-		return errors.New("logged to stderr")
+		err = tidy.Run()
+		if err != nil {
+			LogFail(os.Stderr, "running go mod tidy failed", "Setup")
+			return errors.New("logged to stderr")
+		}
 	}
 
 	LogInfo(os.Stdout, "running go fmt", "Setup")
@@ -313,7 +316,6 @@ func main () {
 }
 
 func (proj *Project) RunTest() error {
-
 	if proj.GoTestArgs == nil {
 		proj.GoTestArgs = &[]string{}
 	}
@@ -398,7 +400,7 @@ func (proj *Project) AddLicense() error {
 				return err
 			}
 
-			err = ioutil.WriteFile(pwd+"/LICENSE", b, 0644)
+			err = ioutil.WriteFile(pwd+"/LICENSE", b, 0o644)
 			if err != nil {
 				return err
 			}
@@ -406,11 +408,9 @@ func (proj *Project) AddLicense() error {
 
 	}
 	return nil
-
 }
 
 func (proj *Project) SetGitignore() error {
-
 	pwd, err := os.Getwd()
 	if err != nil {
 		return err
@@ -420,7 +420,7 @@ func (proj *Project) SetGitignore() error {
 	*proj.Gitignore = append(*proj.Gitignore, *proj.Name)
 	contents := strings.Join(*proj.Gitignore, "\n")
 
-	err = ioutil.WriteFile(gitignorePath, []byte(contents), 0644)
+	err = ioutil.WriteFile(gitignorePath, []byte(contents), 0o644)
 	if err != nil {
 		return err
 	}
@@ -429,7 +429,6 @@ func (proj *Project) SetGitignore() error {
 }
 
 func (proj *Project) AddCodeCov() error {
-
 	*proj.Gitignore = append(*proj.Gitignore, "coverage.txt")
 	*proj.GoTestArgs = append([]string{"-coverprofile=coverage.txt", "-covermode=atomic"}, *proj.GoTestArgs...)
 
@@ -437,7 +436,6 @@ func (proj *Project) AddCodeCov() error {
 }
 
 func (proj *Project) CreateReadme() error {
-
 	pwd, err := os.Getwd()
 	if err != nil {
 		return err
@@ -449,7 +447,7 @@ func (proj *Project) CreateReadme() error {
 		c := `# ` + *proj.Name + `
 
 `
-		err := ioutil.WriteFile(readmePath, []byte(c+"\n"), 0644)
+		err := ioutil.WriteFile(readmePath, []byte(c+"\n"), 0o644)
 		if err != nil {
 			return err
 		}
@@ -459,7 +457,6 @@ func (proj *Project) CreateReadme() error {
 }
 
 func (proj *Project) SetCodeOwners() error {
-
 	pwd, err := os.Getwd()
 	if err != nil {
 		return err
@@ -468,7 +465,7 @@ func (proj *Project) SetCodeOwners() error {
 	path := fmt.Sprintf("%s/.github/CODEOWNERS", pwd)
 
 	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
-		err = os.MkdirAll(fmt.Sprintf("%s/.github", pwd), 0755)
+		err = os.MkdirAll(fmt.Sprintf("%s/.github", pwd), 0o755)
 		if err != nil {
 			return err
 		}
@@ -476,7 +473,7 @@ func (proj *Project) SetCodeOwners() error {
 
 	contents := strings.Join(*proj.CodeOwners, "\n")
 
-	err = ioutil.WriteFile(path, []byte(contents), 0644)
+	err = ioutil.WriteFile(path, []byte(contents), 0o644)
 	if err != nil {
 		return err
 	}
@@ -485,7 +482,6 @@ func (proj *Project) SetCodeOwners() error {
 }
 
 func (proj *Project) RunLinter() error {
-
 	LogInfo(os.Stdout, "running go linter", "Lint")
 
 	lint := exec.Command("golangci-lint", "run")
@@ -500,11 +496,9 @@ func (proj *Project) RunLinter() error {
 
 	LogSuccess(os.Stdout, "go linter passed", "Lint")
 	return nil
-
 }
 
 func (proj *Project) getCommonSteps() []*github.JobStep {
-
 	wf := []*github.JobStep{}
 
 	wf = append(wf, &github.JobStep{
@@ -608,13 +602,12 @@ func (proj *Project) setCommonJobs(wf github.IAction) (github.IAction, error) {
 }
 
 func (proj *Project) CreateReleaseWorkflow() error {
-
 	pwd, err := os.Getwd()
 	if err != nil {
 		return err
 	}
 
-	err = os.MkdirAll(fmt.Sprintf("%s/.github/workflows", pwd), 0755)
+	err = os.MkdirAll(fmt.Sprintf("%s/.github/workflows", pwd), 0o755)
 	if err != nil {
 		return err
 	}
@@ -675,7 +668,7 @@ func (proj *Project) CreateReleaseWorkflow() error {
 		return err
 	}
 
-	err = ioutil.WriteFile(fmt.Sprintf("%s/.github/workflows/release.yml", pwd), yaml, 0644)
+	err = ioutil.WriteFile(fmt.Sprintf("%s/.github/workflows/release.yml", pwd), yaml, 0o644)
 	if err != nil {
 		return err
 	}
@@ -716,7 +709,7 @@ func (proj *Project) CreateReleaseWorkflow() error {
 		return err
 	}
 
-	err = ioutil.WriteFile(fmt.Sprintf("%s/.github/workflows/upload-binary.yml", pwd), yaml2, 0644)
+	err = ioutil.WriteFile(fmt.Sprintf("%s/.github/workflows/upload-binary.yml", pwd), yaml2, 0o644)
 	if err != nil {
 		return err
 	}
@@ -725,13 +718,12 @@ func (proj *Project) CreateReleaseWorkflow() error {
 }
 
 func (proj *Project) CreateBuildWorkflow() error {
-
 	pwd, err := os.Getwd()
 	if err != nil {
 		return err
 	}
 
-	err = os.MkdirAll(fmt.Sprintf("%s/.github/workflows", pwd), 0755)
+	err = os.MkdirAll(fmt.Sprintf("%s/.github/workflows", pwd), 0o755)
 	if err != nil {
 		return err
 	}
@@ -788,7 +780,7 @@ HEAD:${{ github.event.pull_request.head.ref }}'`),
 		return err
 	}
 
-	err = ioutil.WriteFile(fmt.Sprintf("%s/.github/workflows/build.yml", pwd), yaml, 0644)
+	err = ioutil.WriteFile(fmt.Sprintf("%s/.github/workflows/build.yml", pwd), yaml, 0o644)
 	if err != nil {
 		return err
 	}
