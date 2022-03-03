@@ -166,11 +166,27 @@ func TestSProject(t *testing.T) {
 			CodeOwners:           project.StringSlice([]string{"test", "test"}),
 			GoLinter:             project.Bool(true),
 		},
+		{
+			Name:                 project.String("test4"),
+			Description:          project.String("test4"),
+			Repository:           project.String("github.com/test/test4"),
+			AuthorName:           project.String("test4"),
+			AuthorEmail:          project.String("test4"),
+			AuthorOrganization:   project.String("test4"),
+			License:              project.String("GPL-2.0-or-later"),
+			Release:              project.Bool(true),
+			DefaultReleaseBranch: project.String("test4"),
+			BuildWorkflow:        project.Bool(true),
+			Gitignore:            project.StringSlice([]string{"test", "test"}),
+			CodeOwners:           project.StringSlice([]string{"test", "test"}),
+			GoLinter:             project.Bool(true),
+			SkipVendor:           project.Bool(true),
+			SkipTidy:             project.Bool(true),
+		},
 	}
 
 	for k, p := range projects {
 		t.Run(strconv.Itoa(k), func(t *testing.T) {
-
 			fmt.Println(k)
 
 			project.CI = true
@@ -265,8 +281,7 @@ func TestSProject(t *testing.T) {
 
 			if k == 1 {
 				p := fmt.Sprintf("%s/go.mod", dir)
-				err := ioutil.WriteFile(p, []byte{}, 0644)
-
+				err := ioutil.WriteFile(p, []byte{}, 0o644)
 				if err != nil {
 					t.Error(err)
 				}
@@ -354,10 +369,8 @@ func TestSProject(t *testing.T) {
 					t.Error(err)
 				}
 			}
-
 		})
 	}
-
 }
 
 func TestFProject(t *testing.T) {
@@ -415,7 +428,6 @@ func TestFProject(t *testing.T) {
 				fmt.Println(p.GetDescription())
 				t.Error("expected error, got nil")
 			}
-
 		})
 	}
 }
